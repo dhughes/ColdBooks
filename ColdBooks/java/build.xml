@@ -1,0 +1,45 @@
+<project name="Generate Code" default="generate">
+	
+	<target name="generate" >
+
+		<echo message="US versions: 10,11,20,21,30,40,41,50,60,70,80" />
+		<echo message="CA &amp; UK versions: 20,30,60,70,80" />
+		
+		<input addproperty="xjcPath" defaultvalue="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Commands/xjc"  />
+		<input addproperty="edition" defaultvalue="US" validargs="US,UK,CA" />
+		<input addproperty="version" defaultvalue="80" validargs="10,11,20,21,30,40,41,50,60,70,80" />
+
+		<condition property="realVersion" value="" else="${version}">
+			<equals arg1="${version}" arg2="10" />
+		</condition>		
+				
+		<condition property="realEdition" value="">
+			<equals arg1="${edition}" arg2="US" />
+		</condition>
+		
+		<condition property="realEdition" value="qbc">
+			<equals arg1="${edition}" arg2="CA" />
+		</condition>
+		
+		<condition property="realEdition" value="qbu">
+			<equals arg1="${edition}" arg2="UK" />
+		</condition>
+
+		<!--
+		<echo message="realVersion: ${realVersion}" />
+		<echo message="realEdition: ${realEdition}" />	
+		-->
+		
+		<mkdir dir="src/com/alagad/ColdBooks/${edition}/v${version}"/>
+		
+		<exec executable="${xjcPath}">
+			<arg value="-p" />
+			<arg value="com.alagad.ColdBooks.${edition}.v${version}" />
+			<arg value="dtds/${realEdition}qbxmlops${realVersion}.xsd" />
+			<arg value="-d" />
+			<arg value="src" />
+		</exec>
+		
+	</target>
+
+</project> 
