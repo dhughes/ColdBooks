@@ -1,0 +1,2 @@
+<cfheader name="Content-Disposition" value='attachment; filename="#event.getValue("connection").getName()#.qwc"'>
+<cfcontent type="text/xml" reset="true"><cfoutput>#viewstate.getValue("qwsXml")#</cfoutput></cfcontent><cfabort/>

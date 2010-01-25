@@ -1,0 +1,54 @@
+
+<beans>
+	
+	<!-- 
+		This is the default Validat configuration.  You can override this with something
+		like this in your own ColdSpring xml file:
+		
+		<bean id="Validat">
+	
+		</bean>
+		
+	
+	 -->
+	<bean id="ValidatCore" class="Validat.Validat">
+		<constructor-arg name="factory">
+			<ref bean="csFactory" />
+		</constructor-arg>
+		<constructor-arg name="pathToConfigXML">
+			<value>/config/Validat.xml</value>
+		</constructor-arg>
+	</bean>
+	
+	<!-- these are common base objects that are included as part of the validat library -->
+	<bean id="csFactory" 			class="validat.common.csFactory" />
+	<bean id="errorCollection"		class="validat.common.errorCollection"	singleton="false" />
+
+	<!-- these are the base validators objects that are included by default as part of validat -->
+	<bean id="validateAlpha" 		class="validat.validationRules.validateAlpha" />
+	<bean id="validateAlphaNumeric"	class="validat.validationRules.validateAlphaNumeric" />
+	<bean id="validateCreditCard"	class="validat.validationRules.validateCreditCard" />
+	<bean id="validateDate"			class="validat.validationRules.validateDate" />
+	<bean id="validateDifferent"	class="validat.validationRules.validateDifferent" />
+	<bean id="validateEmail"		class="validat.validationRules.validateEmail" />
+	<bean id="validateFormat"		class="validat.validationRules.validateFormat" />
+	<bean id="validateInteger"		class="validat.validationRules.validateInteger" />
+	<bean id="validateLength"		class="validat.validationRules.validateLength" />
+	<bean id="validateLengthGT"		class="validat.validationRules.validateLengthGT" />
+	<bean id="validateLengthLT"		class="validat.validationRules.validateLengthLT" />
+	<bean id="validateNotEmpty"		class="validat.validationRules.validateNotEmpty" />
+	<bean id="validateNumeric"		class="validat.validationRules.validateNumeric" />
+	<bean id="validatePhoneNumber"	class="validat.validationRules.validatePhoneNumber" />
+	<bean id="validatePostalCode"	class="validat.validationRules.validatePostalCode" />
+	<bean id="validateRange"		class="validat.validationRules.validateRange" />
+	<bean id="validateSame"			class="validat.validationRules.validateSame" />
+	<bean id="validateSSN"			class="validat.validationRules.validateSSN"	/>
+	<bean id="validateState"		class="validat.validationRules.validateState" />
+	<bean id="validateValueInList"	class="validat.validationRules.validateValueInList" />
+
+	<!-- these are the base transformer objects that are included by default as part of validat -->
+	<bean id="transformStruct"		class="validat.dataTransformers.transformStruct" />
+	<bean id="transformBean"		class="validat.dataTransformers.transformBean"	/>
+	<bean id="transformOrm"			class="validat.dataTransformers.transformOrm"	/>
+	
+</beans>
