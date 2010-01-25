@@ -1,0 +1,19 @@
+
+ul.errors{
+	color: red;
+	margin: 0px;
+	padding: 0px;	
+}
+
+ul.errors li{
+	margin: 0px;
+	padding: 0px;	
+}
+
+table.lined tr td{
+	border-bottom: 1px solid #eeeeee;	
+}
+
+table.lined table tr td{
+	border-bottom: none;	
+}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-autowire="byName"> 
+
+	<!--// ************************************************** //-->
+	<!--// Mark Mandel's excellent Java Loader (with one minor extension) //-->
+	<bean id="ColdBooksJavaLoader" class="ColdBooks.model.javaloader.ExpandingJavaLoader">
+		<constructor-arg name="loadPaths">
+			<list>
+				<value>/CFIDE/administrator/ColdBooks/java/ColdBooks.jar</value>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<!--// ************************************************** //-->
+	<bean id="ColdBooksQBWCTarget" class="ColdBooks.model.service.qbwc">
+		<property name="version">
+			<value>0.1-Alpha</value>
+		</property>
+		<property name="runAsBatch">
+			<value>true</value>
+		</property>
+	</bean>
+	
+	<bean id="ColdBooksQBWC" class="coldspring.aop.framework.ProxyFactoryBean">
+		<property name="target">
+			<ref bean="ColdBooksQBWCTarget" />
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>ColdBooksExceptionAndLoggingAdvisor</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="ColdBooksConnectionFactory" class="ColdBooks.model.factory.ConnectionFactory" />
+	<bean id="ColdBooksMessageFactory" class="ColdBooks.model.factory.MessageFactory" />
+	
+	<bean id="ColdBooksSecurityService" class="ColdBooks.model.service.SecurityService" />
+	<bean id="ColdBooksConnectionService" class="ColdBooks.model.service.ConnectionService" />
+	
+	<bean id="ColdBooksDatasource" class="ColdBooks.modelglue.Bean.CommonBeans.Datasource">
+		<property name="dsn">
+			<value>ColdBooksData</value>
+		</property>
+	</bean>
+	
+	<bean id="ColdBooksConnectionDao" class="ColdBooks.model.dao.ConnectionDao" />
+	<bean id="ColdBooksMessageDao" class="ColdBooks.model.dao.MessageDao" />
+	
+	<bean id="ColdBooksSession" class="ColdBooks.model.session.Session">
+		<property name="timeout">
+			<value>240</value>
+		</property>
+	</bean>
+		
+	<bean id="ColdBooksExceptionAndLoggingAdvisor" class="ColdBooks.model.advice.ExceptionAndLoggingAdvisor">
+		<property name="enabled">
+			<value>false</value>
+		</property>
+	</bean>	
+	
+	<bean id="ColdBooksTranslator" class="ColdBooks.model.qbxml.Translator" />
+	
+</beans>

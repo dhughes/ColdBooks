@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-autowire="byName"> 
+	
+	<!--// ************************************************** //-->
+	<!--// Validat configuration //-->
+	<import resource="/Validat/config/Validat.xml" /> 
+
+	<bean id="Validat" parent="ValidatCore">
+		<constructor-arg name="pathToConfigXML">
+			<value>/ColdBooks/config/Validat.xml</value>
+		</constructor-arg>
+	</bean>	
+	
+	<bean id="ColdBooksValidateUUID" class="ColdBooks.model.validat.validateUUID" />
+	
+	<!--// ************************************************** //-->
+	<!--// Remote Service Configuration //-->
+	<bean id="ColdBooksAbstractRemoteProxy" class="" abstract="true">
+		<property name="beanFactoryScope">
+			<value>application</value>
+		</property>
+		<property name="beanFactoryName">
+			<value>cs</value>
+		</property>
+		<property name="relativePath">
+			<value>/CFIDE/administrator/ColdBooks/remote</value>
+		</property>
+	</bean>
+	
+	<bean id="ColdBooksRemoteQBWC" class="coldspring.aop.framework.RemoteFactoryBean" parent="ColdBooksAbstractRemoteProxy" lazy-init="false">  
+		<property name="target">  
+			<ref bean="ColdBooksQBWC" />  
+		</property>  
+		<property name="serviceName">  
+			<value>qbwc</value>  
+		</property>  
+		<property name="remoteMethodNames">  
+			<value>serverVersion,clientVersion,authenticate,closeConnection,sendRequestXML,receiveResponseXML,getLastError</value>  
+		</property>  
+	</bean>  
+	
+	<!--// ************************************************** //-->
+	<!--// Import the core of coldbooks //-->
+	<import resource="/ColdBooks/config/ColdSpring.ColdBooks.core.xml" /> 
+	
+</beans>

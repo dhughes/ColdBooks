@@ -1,0 +1,65 @@
+<beans>
+	
+<!-- This is your Model-Glue configuration -->
+<bean id="modelglue.modelGlueConfiguration" class="ModelGlue.gesture.configuration.ModelGlueConfiguration">
+
+	<!-- Be sure to change these to false when you go to production! -->
+	<property name="reload"><value>true</value></property>
+	<property name="debug"><value>false</value></property>
+	
+	<!-- Name of the URL variable that states which event-handler to run -->
+	<property name="eventValue"><value>event</value></property>
+	<!-- Default event-handler -->
+	<property name="defaultEvent"><value>Connections</value></property>
+	<!-- Execute this event when the requested event is missing. Won't work if generationEnabled=true and in development mode! -->
+	<property name="missingEvent"><value>page.missing</value></property>
+	<!-- Execute this event when an error occurs. -->
+	<property name="defaultExceptionHandler"><value>page.error</value></property>
+	
+	<!-- Controls reloading -->
+	<property name="reloadPassword"><value>true</value></property>
+	<property name="reloadKey"><value>init</value></property>
+
+	<!-- Where to find necessary files -->
+	<property name="configurationPath"><value>config/ModelGlue.xml</value></property>
+	<property name="applicationMapping"><value>/CFIDE/administrator</value></property>
+	<property name="viewMappings"><value>/ColdBooks/views</value></property>
+	<property name="helperMappings"><value>/helpers</value></property>
+	
+	<!-- Generate unknown events when in development mode?  (reload=false) -->
+	<property name="generationEnabled"><value>false</value></property>
+	
+	<!-- Set the default cache timeout in seconds -->
+	<property name="defaultCacheTimeout"><value>60</value></property>  	
+	
+	<!-- Scaffolding config -->
+	<!-- Turning this off will disable any scaffold generation. Turning this on requires the reload setting above to also be on.-->	
+	<property name="rescaffold"><value>true</value></property>
+	<!-- Where do you want generated views to be saved to? -->
+	<property name="generatedViewMapping"><value>views</value></property>
+	<!--This directory structure should already exists. ModelGlue will create the Scaffolds.xml file and overwrite as needed.-->
+	<property name="scaffoldPath"><value>config/scaffolds/Scaffolds.xml</value></property>
+	<!-- What scaffold generation patterns should ModelGlue use if you do not specify in the <scaffold type=""> attribute? .-->
+	<property name="defaultScaffolds"><value>list,edit,view,commit,delete</value></property>
+	
+	<!-- See documentation or ModelGlueConfiguration.cfc for additional options. -->
+</bean>
+	
+<!-- 
+	If you need your own configuration values (datasource names, etc), put them here.
+	
+	See modelgluesamples/simpleconfiguration/controller/Controller for an example of how to get to the values.
+	
+	Advanced users who are used to ColdSpring will probably delete this bean in favor of their own approach.
+-->
+<bean id="modelglue.applicationConfiguration" class="ModelGlue.Bean.CommonBeans.SimpleConfig">
+	<property name="config">
+		<map>
+			<entry key="myDatasource"><value>myDatasource</value></entry>
+		</map>
+	</property>
+</bean>
+  
+
+
+</beans>

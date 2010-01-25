@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<validat>
+
+	<!-- validation rule definitions -->
+	<validationRules>
+		<rule name="alpha" validator="validateAlpha" />
+		<rule name="email" validator="validateEmail" />
+		<rule name="length" validator="validateLength">
+			<arg name="min" value="0" />
+			<arg name="max" value="255" />
+		</rule>
+		<rule name="creditCard" validator="validateCreditCard" />
+		<rule name="state" validator="validateState" />
+		<rule name="range" validator="validateRange" />
+		<rule name="creditCard" validator="validateCreditCard" />
+		<rule name="numeric" validator="validateNumeric" />
+		<rule name="date" validator="validateDate" />
+		<rule name="inList" validator="validateValueInList" />
+		<rule name="uuid" validator="ColdBooksValidateUUID" />
+	</validationRules>
+	
+	<!-- data set definitions -->
+	<dataSets>
+
+		<dataSet name="Connection">
+
+			<dataElement name="name" required="true" message="Please provide the connection name.">
+				<assert rule="length" >
+					<message name="invalid" value="The connection name is too long." />
+				</assert>
+			</dataElement>
+
+			<dataElement name="description" required="true" message="Please provide the connection description.">
+				<assert rule="length">
+					<message name="invalid" value="The connection description is too long." />
+				</assert>
+			</dataElement>
+
+			<dataElement name="passwordHash" required="true" message="Please provide the connection password.">
+				<assert rule="length">
+					<message name="invalid" value="The connection password is too long." />
+				</assert>
+			</dataElement>
+
+			<dataElement name="supportUrl" required="true" message="Please provide the support URL.">
+				<assert rule="length">
+					<message name="invalid" value="The support URL is too long." />
+				</assert>
+			</dataElement>
+
+			<dataElement name="webserviceUrl" required="true" message="Please provide a valid support URL so that the web service url can be generated.">
+				<assert rule="length">
+					<message name="invalid" value="The web service URL is too long." />
+				</assert>
+			</dataElement>
+
+			<dataElement name="isReadOnly" required="true" message="Please indicate if the service is read-only." />
+
+			<dataElement name="personalDataPref" required="true" message="Please select a personal data setting." />
+
+			<dataElement name="connectionId" required="true" message="Please provide a valid UUID value.">
+				<assert rule="uuid">
+					<message name="invalid" value="Please provide a valid UUID value." />
+				</assert>
+			</dataElement>
+
+		</dataSet>
+
+	</dataSets>
+</validat>		

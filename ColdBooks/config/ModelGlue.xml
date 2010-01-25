@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modelglue>
+
+<controllers>
+	<controller id="Controller" type="controller.Controller" beans="ColdBooksSecurityService,ColdBooksConnectionService">
+		<message-listener message="InsureLoggedIntoCFAdmin" function="InsureLoggedIntoCFAdmin" />
+		<message-listener message="SaveConnection" function="SaveConnection" />
+		<message-listener message="ListConnections" function="ListConnections" />
+		<message-listener message="GetConnection" function="GetConnection" />
+		<message-listener message="DeleteConnection" function="DeleteConnection" />
+		<message-listener message="GetQwsXml" function="GetQwsXml" />
+	</controller>
+</controllers>
+	
+<event-types>
+	<event-type name="Secured">
+		<before>
+			<broadcasts>
+				<message name="InsureLoggedIntoCFAdmin" />	
+			</broadcasts>
+		</before>
+	</event-type>
+	<event-type name="Templated">
+		<after>
+			<views>
+				<include name="template" template="template/template.cfm" />
+			</views>
+		</after>
+	</event-type>	
+</event-types>
+		
+<event-handlers>
+	
+	<!-- <event-handler name="Configure">
+		<broadcasts>
+			<message name="ConfigureColdBooks" />	
+		</broadcasts>
+		<views>
+			<include name="body" template="pages/configured.cfm" />
+		</views>
+	</event-handler> -->
+	
+	<event-handler name="Connections" type="Secured,Templated">
+		<broadcasts>
+			<message name="ListConnections" />	
+		</broadcasts>
+		<views>
+			<include name="body" template="pages/connections.cfm">
+				<message name="xe.integration" value="Integration" />
+				<message name="xe.editConnection" value="EditConnection" />
+				<message name="xe.deleteConnection" value="DeleteConnection" />
+				<message name="xe.getQwsFile" value="GetQwsFile" />
+			</include>
+		</views>
+	</event-handler>
+	
+	<event-handler name="EditConnection" type="Secured,Templated">
+		<broadcasts>
+			<message name="GetConnection" />	
+		</broadcasts>
+		<views>
+			<include name="body" template="pages/connection.cfm">
+				<value name="xe.saveConnection" value="SaveConnection" />
+				<value name="xe.connections" value="Connections" />
+			</include>
+		</views>
+	</event-handler>
+	
+	<event-handler name="GetQwsFile" type="Secured">
+		<broadcasts>
+			<message name="GetConnection" />
+			<message name="GetQwsXml" />	
+		</broadcasts>
+		<views>
+			<include name="body" template="pages/qws.cfm" />
+		</views>
+	</event-handler>
+	
+	<event-handler name="SaveConnection" type="Secured">
+		<broadcasts>
+			<message name="SaveConnection" />
+		</broadcasts>
+		<results>
+			<result name="invalid" do="EditConnection" />
+			<result name="saved" do="Connections" redirect="true" />
+		</results>
+	</event-handler>
+	
+	<event-handler name="DeleteConnection" type="Secured">
+		<broadcasts>
+			<message name="DeleteConnection" />
+		</broadcasts>
+		<results>
+			<result do="Connections" redirect="true" />
+		</results>
+	</event-handler>
+	
+	
+	
+	<event-handler name="Integration" type="Secured,Templated">
+		<views>
+			<include name="body" template="pages/integration.cfm" />
+		</views>
+	</event-handler>
+	
+	<!-- An error event to show when an error occurs, much like <cferror>. -->
+	<event-handler name="page.error" type="Templated">
+		<broadcasts />
+		<results />
+		<views>
+			<include name="body" template="pages/exception.cfm" />
+		</views>
+	</event-handler>
+
+	<!-- A "404" event to show when the requested event isn't defined. -->
+	<event-handler name="page.missing" type="Templated">
+		<broadcasts />
+		<results />
+		<views>
+			<include name="body" template="pages/missingEvent.cfm" />
+		</views>
+	</event-handler>
+	
+</event-handlers>
+	
+</modelglue>
+
