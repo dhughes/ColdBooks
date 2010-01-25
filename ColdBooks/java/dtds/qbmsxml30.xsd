@@ -1,0 +1,1233 @@
+
+<!-- ============================================================================= -->
+<!--                                                                               -->
+<!-- qbmsxml30.xsd                                                                 -->
+<!--                                                                               -->
+<!-- qbmsXML version 3.0                                                           -->
+<!--                                                                               -->
+<!-- (c) 2008 Intuit Inc. All rights reserved.                                     -->
+<!--                                                                               -->
+<!-- Use is subject to a qbmsXML Developer Agreement available at:                -->
+<!--          http://developer.intuit.com/legal/                                   -->
+<!--                                                                               -->
+<!-- ============================================================================= -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+<xsd:include schemaLocation="qbmsxmltypes30.xsd"/>
+<xsd:include schemaLocation="qbmsxmlso30.xsd"/>
+
+
+<!-- ============================================================================= -->
+<!--     Elements                                                                  -->
+<!-- ============================================================================= -->
+
+<xsd:element name="CreditCardNumber" type="STRTYPE"/>
+<xsd:element name="CreditCardAddress" type="STRTYPE"/>
+<xsd:element name="CreditCardPostalCode" type="STRTYPE"/>
+<xsd:element name="NameOnCard" type="STRTYPE"/>
+<xsd:element name="Amount" type="AMTTYPE"/>
+<xsd:element name="ExpirationYear" type="INTTYPE"/>
+<xsd:element name="ExpirationMonth">
+	<xsd:simpleType>
+		<xsd:restriction base="INTTYPE">
+			<xsd:maxInclusive value="12"/>
+			<xsd:minInclusive value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="SalesTaxAmount" type="AMTTYPE"/>
+<xsd:element name="CommercialCardCode" type="STRTYPE"/>
+<xsd:element name="CardSecurityCode" type="STRTYPE"/>
+<xsd:element name="CardSecurityCodeMatch">
+	<xsd:simpleType>
+		<xsd:restriction base="ENUMTYPE">
+			<xsd:enumeration value="Pass"/>
+			<xsd:enumeration value="Fail"/>
+			<xsd:enumeration value="NotAvailable"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="CreditCardTransID" type="STRTYPE"/>
+<xsd:element name="ReconBatchID" type="STRTYPE"/>
+<xsd:element name="PaymentGroupingCode" type="INTTYPE"/>
+<xsd:element name="PaymentStatus">
+	<xsd:simpleType>
+		<xsd:restriction base="ENUMTYPE">
+			<xsd:enumeration value="Unknown"/>
+			<xsd:enumeration value="Completed"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="AVSStreet">
+	<xsd:simpleType>
+		<xsd:restriction base="ENUMTYPE">
+			<xsd:enumeration value="Pass"/>
+			<xsd:enumeration value="Fail"/>
+			<xsd:enumeration value="NotAvailable"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="AVSZip">
+	<xsd:simpleType>
+		<xsd:restriction base="ENUMTYPE">
+			<xsd:enumeration value="Pass"/>
+			<xsd:enumeration value="Fail"/>
+			<xsd:enumeration value="NotAvailable"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="MerchantAccountNumber" type="STRTYPE"/>
+<xsd:element name="AuthorizationCode" type="STRTYPE"/>
+<xsd:element name="TxnAuthorizationTime" type="DATETIMETYPE"/>
+<xsd:element name="TxnAuthorizationStamp" type="INTTYPE"/>
+<xsd:element name="IsECommerce" type="BOOLTYPE"/>
+<xsd:element name="IsRecurring" type="BOOLTYPE"/>
+<xsd:element name="ConvenienceFees" type="AMTTYPE"/>
+<xsd:element name="CreditCardType">
+	<xsd:simpleType>
+		<xsd:restriction base="ENUMTYPE">
+			<xsd:enumeration value="Visa"/>
+			<xsd:enumeration value="MasterCard"/>
+			<xsd:enumeration value="Discover"/>
+			<xsd:enumeration value="AmericanExpress"/>
+			<xsd:enumeration value="JCB"/>
+			<xsd:enumeration value="DinersClub"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="IsCardPresent" type="BOOLTYPE"/>
+<xsd:element name="Track2Data" type="STRTYPE"/>
+<xsd:element name="TransRequestID" type="STRTYPE"/>
+<xsd:element name="ClientTransID" type="STRTYPE"/>
+<xsd:element name="VoidOrRefundTxnType">
+	<xsd:simpleType>
+		<xsd:restriction base="ENUMTYPE">
+			<xsd:enumeration value="Refund"/>
+			<xsd:enumeration value="Void"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="ForceRefund" type="BOOLTYPE"/>
+<xsd:element name="FolioID" type="STRTYPE"/>
+<xsd:element name="ChargeType">
+	<xsd:simpleType>
+		<xsd:restriction base="ENUMTYPE">
+			<xsd:enumeration value="ConventionFees"/>
+			<xsd:enumeration value="GiftShop"/>
+			<xsd:enumeration value="Golf"/>
+			<xsd:enumeration value="HealthClub"/>
+			<xsd:enumeration value="Hotel"/>
+			<xsd:enumeration value="Restaurant"/>
+			<xsd:enumeration value="Salon"/>
+			<xsd:enumeration value="Tennis"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="CheckInDate" type="DATETYPE"/>
+<xsd:element name="CheckOutDate" type="DATETYPE"/>
+<xsd:element name="LengthOfStay" type="INTTYPE"/>
+<xsd:element name="RoomRate" type="AMTTYPE"/>
+<xsd:element name="ExtraCharge">
+	<xsd:simpleType>
+		<xsd:restriction base="ENUMTYPE">
+			<xsd:enumeration value="GiftShop"/>
+			<xsd:enumeration value="Laundry"/>
+			<xsd:enumeration value="MiniBar"/>
+			<xsd:enumeration value="Restaurant"/>
+			<xsd:enumeration value="Telephone"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="SpecialProgram">
+	<xsd:simpleType>
+		<xsd:restriction base="ENUMTYPE">
+			<xsd:enumeration value="AdvanceDeposit"/>
+			<xsd:enumeration value="AssuredReservation"/>
+			<xsd:enumeration value="DelayedCharge"/>
+			<xsd:enumeration value="ExpressService"/>
+			<xsd:enumeration value="NormalCharge"/>
+			<xsd:enumeration value="NoShowCharge"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
+<xsd:element name="TotalAuthAmount" type="AMTTYPE"/>
+<xsd:element name="BatchID" type="STRTYPE"/>
+<xsd:element name="ServerID" type="STRTYPE"/>
+<xsd:element name="FoodAmount" type="AMTTYPE"/>
+<xsd:element name="BeverageAmount" type="AMTTYPE"/>
+<xsd:element name="TaxAmount" type="AMTTYPE"/>
+<xsd:element name="TipAmount" type="AMTTYPE"/>
+<xsd:element name="PINBlock" type="STRTYPE"/>
+<xsd:element name="SMID" type="STRTYPE"/>
+<xsd:element name="CashBackAmount" type="AMTTYPE"/>
+<xsd:element name="DebitCardTransID" type="STRTYPE"/>
+<xsd:element name="NetworkNumber" type="STRTYPE"/>
+<xsd:element name="NetworkName" type="STRTYPE"/>
+
+
+<!-- ============================================================================= -->
+<!--      Macros                                                                   -->
+<!-- ============================================================================= -->
+
+<xsd:group name="Indicator">
+	<xsd:sequence>
+		<xsd:choice minOccurs="0">
+			<xsd:element ref="IsCardPresent"/>
+			<xsd:element ref="IsECommerce"/>
+			<xsd:element ref="IsRecurring"/>
+		</xsd:choice>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="IndicatorWithoutIsRecurring">
+	<xsd:sequence>
+		<xsd:choice minOccurs="0">
+			<xsd:element ref="IsCardPresent"/>
+			<xsd:element ref="IsECommerce"/>
+		</xsd:choice>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="CreditCardData">
+	<xsd:sequence>
+		<xsd:element name="CreditCardNumber">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="19"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="ExpirationMonth"/>
+		<xsd:element ref="ExpirationYear"/>
+		<xsd:group ref="Indicator"/>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="CreditCardDataWithoutIsRecurring">
+	<xsd:sequence>
+		<xsd:element name="CreditCardNumber">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="19"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="ExpirationMonth"/>
+		<xsd:element ref="ExpirationYear"/>
+		<xsd:group ref="IndicatorWithoutIsRecurring"/>
+	</xsd:sequence>
+</xsd:group>
+
+
+
+<!-- ============================================================================= -->
+<!--     Aggregates                                                                -->
+<!-- ============================================================================= -->
+
+<xsd:element name="Lodging">
+	<xsd:complexType>
+		<xsd:sequence>
+			<xsd:element name="FolioID">
+				<xsd:simpleType>
+					<xsd:restriction base="STRTYPE">
+						<xsd:maxLength value="25"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element ref="ChargeType" minOccurs="0"/>
+			<xsd:element ref="CheckInDate" minOccurs="0"/>
+			<xsd:element ref="CheckOutDate" minOccurs="0"/>
+			<xsd:element name="LengthOfStay" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="INTTYPE">
+						<xsd:maxInclusive value="99"/>
+						<xsd:minInclusive value="1"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element ref="RoomRate" minOccurs="0"/>
+			<xsd:element ref="ExtraCharge" minOccurs="0" maxOccurs="6"/>
+			<xsd:element ref="SpecialProgram" minOccurs="0"/>
+			<xsd:element ref="TotalAuthAmount" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Restaurant">
+	<xsd:complexType>
+		<xsd:sequence>
+			<xsd:element name="ServerID" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="STRTYPE">
+						<xsd:maxLength value="2"/>
+						<xsd:minLength value="2"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element ref="FoodAmount" minOccurs="0"/>
+			<xsd:element ref="BeverageAmount" minOccurs="0"/>
+			<xsd:element ref="TaxAmount" minOccurs="0"/>
+			<xsd:element ref="TipAmount" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:element>
+
+
+
+<!-- ============================================================================= -->
+<!--      Message Sets                                                             -->
+<!-- ============================================================================= -->
+
+<!-- Message Set Request/Response Pairs and contained requests  -->
+<xsd:element name="QBMSXMLMsgsRq">
+	<xsd:complexType>
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="CustomerCreditCardChargeRq" type="CustomerCreditCardChargeRqType"/>
+			<xsd:element name="CustomerCreditCardVoiceAuthRq" type="CustomerCreditCardVoiceAuthRqType"/>
+			<xsd:element name="CustomerCreditCardAuthRq" type="CustomerCreditCardAuthRqType"/>
+			<xsd:element name="CustomerCreditCardCaptureRq" type="CustomerCreditCardCaptureRqType"/>
+			<xsd:element name="CustomerCreditCardRefundRq" type="CustomerCreditCardRefundRqType"/>
+			<xsd:element name="CustomerCreditCardTxnVoidRq" type="CustomerCreditCardTxnVoidRqType"/>
+			<xsd:element name="CustomerCreditCardTxnVoidOrRefundRq" type="CustomerCreditCardTxnVoidOrRefundRqType"/>
+			<xsd:element name="CustomerCreditCardTxnIncrementalAuthRq" type="CustomerCreditCardTxnIncrementalAuthRqType"/>
+			<xsd:element name="CustomerDebitCardChargeRq" type="CustomerDebitCardChargeRqType"/>
+			<xsd:element name="MerchantAccountQueryRq" type="MerchantAccountQueryRqType"/>
+			<xsd:element name="MerchantBatchCloseRq" type="MerchantBatchCloseRqType"/>
+		</xsd:choice>
+	</xsd:complexType>
+</xsd:element>
+
+<xsd:element name="QBMSXMLMsgsRs">
+	<xsd:complexType>
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="CustomerCreditCardChargeRs" type="CustomerCreditCardChargeRsType"/>
+			<xsd:element name="CustomerCreditCardVoiceAuthRs" type="CustomerCreditCardVoiceAuthRsType"/>
+			<xsd:element name="CustomerCreditCardAuthRs" type="CustomerCreditCardAuthRsType"/>
+			<xsd:element name="CustomerCreditCardCaptureRs" type="CustomerCreditCardCaptureRsType"/>
+			<xsd:element name="CustomerCreditCardRefundRs" type="CustomerCreditCardRefundRsType"/>
+			<xsd:element name="CustomerCreditCardTxnVoidRs" type="CustomerCreditCardTxnVoidRsType"/>
+			<xsd:element name="CustomerCreditCardTxnVoidOrRefundRs" type="CustomerCreditCardTxnVoidOrRefundRsType"/>
+			<xsd:element name="CustomerCreditCardTxnIncrementalAuthRs" type="CustomerCreditCardTxnIncrementalAuthRsType"/>
+			<xsd:element name="CustomerDebitCardChargeRs" type="CustomerDebitCardChargeRsType"/>
+			<xsd:element name="MerchantAccountQueryRs" type="MerchantAccountQueryRsType"/>
+			<xsd:element name="MerchantBatchCloseRs" type="MerchantBatchCloseRsType"/>
+		</xsd:choice>
+	</xsd:complexType>
+</xsd:element>
+
+<!-- ============================================================================= -->
+<!--      Request Detail                                                           -->
+<!-- ============================================================================= -->
+
+
+<!-- CustomerCreditCard Requests -->
+<xsd:complexType name="CustomerCreditCardChargeRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:choice>
+			<xsd:group ref="CreditCardData"/>
+			<xsd:element name="Track2Data">
+				<xsd:simpleType>
+					<xsd:restriction base="STRTYPE">
+						<xsd:maxLength value="39"/>
+						<xsd:minLength value="23"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:choice>
+		<xsd:element ref="Amount"/>
+		<xsd:element name="NameOnCard" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="30"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CreditCardAddress" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="30"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CreditCardPostalCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="9"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CommercialCardCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="25"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="SalesTaxAmount" minOccurs="0"/>
+		<xsd:element name="CardSecurityCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="Lodging" minOccurs="0"/>
+		<xsd:element ref="Restaurant" minOccurs="0"/>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardVoiceAuthRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:choice>
+			<xsd:group ref="CreditCardDataWithoutIsRecurring"/>
+			<xsd:element name="Track2Data">
+				<xsd:simpleType>
+					<xsd:restriction base="STRTYPE">
+						<xsd:maxLength value="39"/>
+						<xsd:minLength value="23"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:choice>
+		<xsd:element ref="Amount"/>
+		<xsd:element name="AuthorizationCode">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="6"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CommercialCardCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="25"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="SalesTaxAmount" minOccurs="0"/>
+		<xsd:element ref="Lodging" minOccurs="0"/>
+		<xsd:element ref="Restaurant" minOccurs="0"/>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardAuthRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:choice>
+			<xsd:group ref="CreditCardData"/>
+			<xsd:element name="Track2Data">
+				<xsd:simpleType>
+					<xsd:restriction base="STRTYPE">
+						<xsd:maxLength value="39"/>
+						<xsd:minLength value="23"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:choice>
+		<xsd:element ref="Amount"/>
+		<xsd:element name="NameOnCard" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="30"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CreditCardAddress" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="30"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CreditCardPostalCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="9"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CommercialCardCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="25"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="SalesTaxAmount" minOccurs="0"/>
+		<xsd:element name="CardSecurityCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="Lodging" minOccurs="0"/>
+		<xsd:element ref="Restaurant" minOccurs="0"/>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardCaptureRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CreditCardTransID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="Amount" minOccurs="0"/>
+		<xsd:element ref="Lodging" minOccurs="0"/>
+		<xsd:element ref="Restaurant" minOccurs="0"/>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardRefundRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:choice>
+			<xsd:group ref="CreditCardDataWithoutIsRecurring"/>
+			<xsd:element name="Track2Data">
+				<xsd:simpleType>
+					<xsd:restriction base="STRTYPE">
+						<xsd:maxLength value="39"/>
+						<xsd:minLength value="23"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:choice>
+		<xsd:element ref="Amount"/>
+		<xsd:element name="NameOnCard" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="30"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CommercialCardCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="25"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="SalesTaxAmount" minOccurs="0"/>
+		<xsd:element ref="Lodging" minOccurs="0"/>
+		<xsd:element ref="Restaurant" minOccurs="0"/>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+
+<!-- CustomerCreditCardTxn Requests -->
+<xsd:complexType name="CustomerCreditCardTxnVoidRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CreditCardTransID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardTxnVoidOrRefundRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CreditCardTransID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="Amount" minOccurs="0"/>
+		<xsd:element name="CommercialCardCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="25"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="SalesTaxAmount" minOccurs="0"/>
+		<xsd:element ref="ForceRefund" minOccurs="0"/>
+		<xsd:element ref="Lodging" minOccurs="0"/>
+		<xsd:element ref="Restaurant" minOccurs="0"/>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardTxnIncrementalAuthRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="CreditCardTransID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="Amount"/>
+		<xsd:element ref="Lodging"/>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+
+<!-- CustomerDebitCard Requests -->
+<xsd:complexType name="CustomerDebitCardChargeRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="Track2Data">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="39"/>
+					<xsd:minLength value="23"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="PINBlock">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+					<xsd:minLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="SMID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="20"/>
+					<xsd:minLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="Amount"/>
+		<xsd:element name="NameOnCard" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="30"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="CashBackAmount" minOccurs="0"/>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+
+<!-- MerchantAccount Requests -->
+<xsd:complexType name="MerchantAccountQueryRqType">
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+
+<!-- MerchantBatch Requests -->
+<xsd:complexType name="MerchantBatchCloseRqType">
+	<xsd:sequence>
+		<xsd:element name="TransRequestID">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="BatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="4"/>
+					<xsd:minLength value="4"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+</xsd:complexType>
+
+
+
+<!-- ============================================================================= -->
+<!--      Response Detail                                                          -->
+<!-- ============================================================================= -->
+
+
+<!-- CustomerCreditCard Responses -->
+<xsd:complexType name="CustomerCreditCardChargeRsType">
+	<xsd:sequence>
+		<xsd:element name="CreditCardTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="AuthorizationCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="6"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="AVSStreet" minOccurs="0"/>
+		<xsd:element ref="AVSZip" minOccurs="0"/>
+		<xsd:element ref="CardSecurityCodeMatch" minOccurs="0"/>
+		<xsd:element name="MerchantAccountNumber" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ReconBatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="84"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="PaymentGroupingCode" minOccurs="0"/>
+		<xsd:element ref="PaymentStatus" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationTime" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationStamp" minOccurs="0"/>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardVoiceAuthRsType">
+	<xsd:sequence>
+		<xsd:element name="CreditCardTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="AuthorizationCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="6"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="MerchantAccountNumber" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ReconBatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="84"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="PaymentGroupingCode" minOccurs="0"/>
+		<xsd:element ref="PaymentStatus" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationTime" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationStamp" minOccurs="0"/>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardAuthRsType">
+	<xsd:sequence>
+		<xsd:element name="CreditCardTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="AuthorizationCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="6"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="AVSStreet" minOccurs="0"/>
+		<xsd:element ref="AVSZip" minOccurs="0"/>
+		<xsd:element ref="CardSecurityCodeMatch" minOccurs="0"/>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardCaptureRsType">
+	<xsd:sequence>
+		<xsd:element name="CreditCardTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="AuthorizationCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="6"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="MerchantAccountNumber" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ReconBatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="84"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="PaymentGroupingCode" minOccurs="0"/>
+		<xsd:element ref="PaymentStatus" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationTime" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationStamp" minOccurs="0"/>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardRefundRsType">
+	<xsd:sequence>
+		<xsd:element name="CreditCardTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="MerchantAccountNumber" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ReconBatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="84"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="PaymentGroupingCode" minOccurs="0"/>
+		<xsd:element ref="PaymentStatus" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationTime" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationStamp" minOccurs="0"/>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+
+<!-- CustomerCreditCardTxn Responses -->
+<xsd:complexType name="CustomerCreditCardTxnVoidRsType">
+	<xsd:sequence>
+		<xsd:element name="CreditCardTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardTxnVoidOrRefundRsType">
+	<xsd:sequence>
+		<xsd:element name="CreditCardTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="VoidOrRefundTxnType" minOccurs="0"/>
+		<xsd:element name="MerchantAccountNumber" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ReconBatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="84"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="PaymentGroupingCode" minOccurs="0"/>
+		<xsd:element ref="PaymentStatus" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationTime" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationStamp" minOccurs="0"/>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+<xsd:complexType name="CustomerCreditCardTxnIncrementalAuthRsType">
+	<xsd:sequence>
+		<xsd:element name="CreditCardTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="AuthorizationCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="6"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+
+<!-- CustomerDebitCard Responses -->
+<xsd:complexType name="CustomerDebitCardChargeRsType">
+	<xsd:sequence>
+		<xsd:element name="DebitCardTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="AuthorizationCode" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="6"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="NetworkName" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="NetworkNumber" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="3"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="MerchantAccountNumber" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ReconBatchID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="84"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+		<xsd:element ref="PaymentGroupingCode" minOccurs="0"/>
+		<xsd:element ref="PaymentStatus" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationTime" minOccurs="0"/>
+		<xsd:element ref="TxnAuthorizationStamp" minOccurs="0"/>
+		<xsd:element name="ClientTransID" minOccurs="0">
+			<xsd:simpleType>
+				<xsd:restriction base="STRTYPE">
+					<xsd:maxLength value="16"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+
+<!-- MerchantAccount Responses -->
+<xsd:complexType name="MerchantAccountQueryRsType">
+	<xsd:sequence>
+		<xsd:element ref="ConvenienceFees" minOccurs="0"/>
+		<xsd:element ref="CreditCardType" minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+
+<!-- MerchantBatch Responses -->
+<xsd:complexType name="MerchantBatchCloseRsType">
+	<xsd:attribute name="requestID" type="STRTYPE"/>
+	<xsd:attribute name="statusCode" type="INTTYPE" use="required"/>
+	<xsd:attribute name="statusSeverity" type="STRTYPE" use="required"/>
+	<xsd:attribute name="statusMessage" type="STRTYPE"/>
+</xsd:complexType>
+
+
+
+<!-- Top-level -->
+<xsd:element name="QBMSXML">
+	<xsd:complexType>
+		<xsd:choice>
+			<xsd:sequence>
+				<xsd:element ref="SignonMsgsRq"/>
+				<xsd:choice>
+					<xsd:element ref="QBMSXMLMsgsRq" minOccurs="0"/>
+				</xsd:choice>
+			</xsd:sequence>
+
+			<xsd:sequence>
+				<xsd:element ref="SignonMsgsRs"/>
+				<xsd:choice>
+					<xsd:element ref="QBMSXMLMsgsRs" minOccurs="0"/>
+				</xsd:choice>
+			</xsd:sequence>
+		</xsd:choice>
+	</xsd:complexType>
+</xsd:element>
+
+</xsd:schema>
