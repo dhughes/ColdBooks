@@ -96,6 +96,7 @@
 		<cfset Connection.setCountry(qbXMLCountry) />
 		<cfset Connection.setQbXMLMajorVersion(qbXMLMajorVers) />
 		<cfset Connection.setQbXMLMinorVersion(qbXMLMinorVers) />
+		<cfset Connection.setLastConnectionDateTime(now()) />
 		<cfset ColdBooksConnectionDao.saveConnection(Connection) />
 		
 		<!--- on the first request, QuickBooks volunteers some information --->

@@ -57,7 +57,7 @@
 		
 	<bean id="ColdBooksExceptionAndLoggingAdvisor" class="ColdBooks.model.advice.ExceptionAndLoggingAdvisor">
 		<property name="enabled">
-			<value>false</value>
+			<value>true</value>
 		</property>
 	</bean>	
 	

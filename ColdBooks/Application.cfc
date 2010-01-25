@@ -11,7 +11,7 @@
 	<cfset this.setDomainCookies = false />
 	<cfset this.scriptProtect = false />
 	<cfset this.debug = true />
-	
+		
 	<cfset this.mapRoot = expandPath('/CFIDE/administrator/ColdBooks') />
 	
 	<!---// Create all necessary per-application mappings //--->
