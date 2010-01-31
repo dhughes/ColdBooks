@@ -2,6 +2,7 @@
 <cfset xe.editConnection = event.getValue("xe.editConnection") />
 <cfset xe.deleteConnection = event.getValue("xe.deleteConnection") />
 <cfset xe.getQwsFile = event.getValue("xe.getQwsFile") />
+<cfset xe.viewLog = event.getValue("xe.viewLog") />
 <cfset connections = event.getValue("connections") />
 
 <h2 class="pageHeader">ColdBooks Connections</h2>
@@ -45,6 +46,12 @@
 						 <strong>Web Service URL</strong>
 					</th>
 					<th scope="col" nowrap bgcolor="##F3F7F7" class="cellBlueTopAndBottom">
+						 <strong>Pending Messages</strong>
+					</th>
+					<th scope="col" nowrap bgcolor="##F3F7F7" class="cellBlueTopAndBottom">
+						 <strong>Errored Messages</strong>
+					</th>
+					<th scope="col" nowrap bgcolor="##F3F7F7" class="cellBlueTopAndBottom">
 						<strong>Last Connection On</strong>
 					</th>
 				</tr>
@@ -62,11 +69,18 @@
 										   title="Edit #connection.getName()#"
 										><img src="/CFIDE/administrator/images/iedit.gif" vspace="2" width="16" height="16" alt="Edit #connection.getName()#" border="0"></a>
 									</td>
+									<td> 
+										<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#"
+										   onmouseover="window.status='View #connection.getName()# logs'; return true;"
+										   onmouseout="window.status=''; return true;"
+										   title="View #connection.getName()# logs"
+										><img src="/CFIDE/administrator/images/view.gif" vspace="2" hspace="1" width="16" height="16" alt="View #connection.getName()# logs" border="0"></a>
+									</td>
 									<td>
 										<a href="#event.linkTo(xe.getQwsFile)#&id=#connection.getId()#"
 										   onmouseover="window.status='Download QWC File'; return true;"
 										   onmouseout="window.status=''; return true;"
-										   title="Download QWC File"
+										   title="Download #connection.getName()# QWC File"
 										><img src="/CFIDE/administrator/ColdBooks/images/idownload.gif" vspace="2" hspace="1" width="16" height="16" alt="Download QWC File" border="0"></a>
 									</td>
 									<td> 
@@ -74,7 +88,7 @@
 										   onmouseover="window.status='Delete #connection.getName()#'; return true;"
 										   onmouseout="window.status=''; return true;"
 										   onclick="return confirm('Are you sure you want to delete #connection.getName()#?');"
-										   title="Delete alagad"
+										   title="Delete #connection.getName()#"
 										><img src="/CFIDE/administrator/images/idelete.gif" vspace="2" hspace="1" width="16" height="16" alt="Delete #connection.getName()#" border="0"></a>
 									</td>
 							</tr>
@@ -91,8 +105,13 @@
 						 &nbsp;
 						</td>
 						<td nowrap class="cellRightAndBottomBlueSide">
-							<!---<img src="/CFIDE/administrator/images/alert.gif" vspace="2" hspace="1" width="16" height="16" alt="Problem With Connection" border="0" align="absmiddle">--->
 							#connection.getWebServiceUrl()#
+						</td>
+						<td nowrap class="cellRightAndBottomBlueSide">
+							#connection.getPendingRequestCount()#
+						</td>
+						<td nowrap class="cellRightAndBottomBlueSide">
+							<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#">#connection.getErroredRequestCount()#</a>
 						</td>
 						<td nowrap class="cellRightAndBottomBlueSide">
 							<cfif IsDate(connection.getlastConnectionDateTime())>

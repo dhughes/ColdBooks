@@ -10,9 +10,9 @@
 	<cfset this.setClientCookies = false />
 	<cfset this.setDomainCookies = false />
 	<cfset this.scriptProtect = false />
-	<cfset this.debug = true />
+	<!---<cfset this.debug = true />--->
 		
-	<cfset this.mapRoot = expandPath('/CFIDE/administrator/ColdBooks') />
+	<cfset this.mapRoot = expandPath("/CFIDE/administrator/ColdBooks") />
 	
 	<!---// Create all necessary per-application mappings //--->
 	<cfset this.mappings = structNew() />
@@ -20,20 +20,7 @@
 	<cfset this.mappings["/coldspring"] = this.mapRoot & "/coldspring" />
 	<cfset this.mappings["/modelglue"] = this.mapRoot & "/modelglue" />
 
-	<!--- insure the database exists
-	<cfset this.dbExists = databaseExists() />
-	 --->
-	<!---<cfif this.dbExists>
-		<cfset this.datasource = "ColdBooksData" />
-		<cfset this.ormenabled = true />
-		<cfset this.ormsettings.dialect = "Derby" />
-		<cfset this.ormsettings.dbcreate = "update" /> <!--- dropcreate,update --->
-		<cfset this.ormsettings.cfclocation = "model" />
-		<!---<cfset this.ormsettings.eventhandler = "com.ormevent.AuditInterceptor" />--->
-		<cfset this.ormsettings.logsql = true />
-	</cfif>--->
-		
-	<!---<cffunction name="databaseExists" access="private">
+	<cffunction name="databaseExists" access="private">
 		<cftry>
 			<!--- this query will insure the datasource and database exist --->
 			<cfquery name="test" datasource="ColdBooksData">
@@ -44,12 +31,9 @@
 				<cfreturn false />
 			</cfcatch>
 		</cftry>
-	</cffunction>--->
+	</cffunction>
 
 	<cffunction name="onApplicationStart" returnType="boolean" output="false">
-		<!---// Initialize some application level vars, may be replace w/ a coldspring bean later //--->
-		<!---<cfset ORMReload() />--->
-		
 		<cfreturn true>
 	</cffunction>
 
@@ -74,19 +58,19 @@
 	<cffunction name="onRequestStart" returnType="boolean" output="false">
 		<cfargument name="thePage" type="string" required="true" />
 
-		<!--- check to see if the DB exists
-		<cfif NOT this.dbExists>
+		<!--- check to see if the DB exists --->
+		<cfif NOT databaseExists()>
 			<cfset initializeDatabase() />
 			<!--- db should exist now.  Now we need to reload the app to get it to pickup our ORM settings --->
 			<cflocation url="#cgi.script_name#?init=true" addtoken="false" />
-		</cfif> --->
+		</cfif>
 
 		<!---// Reload app and session if requested //--->
 		<cfif structKeyExists( url, "init" ) AND url.init EQ "true" >
 		
-			<cfif this.debug >
+			<!---<cfif this.debug >
 				<cflog file="#this.realName#" text="Reloading Application" />
-			</cfif>
+			</cfif>--->
 
 			<cfparam name="request.init" default="reloaded" />
 			<cflock scope="application" timeout="10">
@@ -132,7 +116,7 @@
 
 	<!---// -------------------------------------------------- //--->
 
-	<!---<cffunction name="initializeDatabase" output="false" access="private">
+	<cffunction name="initializeDatabase" output="false" access="private">
 		<cfset var dataDir = server.coldfusion.rootDir & "/ColdBooksData" />
 		
 		<cfapplication name="cfadmin" />
@@ -157,7 +141,7 @@
 				</cfif>
 			</cflock>
  		</cfif>
-	</cffunction>--->
+	</cffunction>
 	
 	<!---<cffunction name="databaseExists" output="false" access="private">
 		<cfset var dataDir = server.coldfusion.rootDir & "/ColdBooksData" />
@@ -175,9 +159,9 @@
 		<cfset application.cs = createObject( "component" , "coldspring.beans.DefaultXmlBeanFactory" ).init() />
 		<cfset application.cs.loadBeansFromXmlFile( expandPath("/ColdBooks/config/coldspring.ColdBooks.xml"), true ) />
 		
-		<cfif this.debug >
+		<!---<cfif this.debug >
 			<cflog file="#this.realName#" text="Reloading ColdSpring Bean Factory" />
-		</cfif>
+		</cfif>--->
 		
 		<!---// does model-glue exist? if so reset the reference to the parent bean factory //--->
 		<cfif structKeyExists( application, this.realName ) AND structKeyExists( application[this.realName], "framework" ) >

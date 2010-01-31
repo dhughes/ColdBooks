@@ -2,13 +2,14 @@
 <modelglue>
 
 <controllers>
-	<controller id="Controller" type="controller.Controller" beans="ColdBooksSecurityService,ColdBooksConnectionService">
+	<controller id="Controller" type="controller.Controller" beans="ColdBooksSecurityService,ColdBooksConnectionService,ColdBooksMessageService">
 		<message-listener message="InsureLoggedIntoCFAdmin" function="InsureLoggedIntoCFAdmin" />
 		<message-listener message="SaveConnection" function="SaveConnection" />
 		<message-listener message="ListConnections" function="ListConnections" />
 		<message-listener message="GetConnection" function="GetConnection" />
 		<message-listener message="DeleteConnection" function="DeleteConnection" />
 		<message-listener message="GetQwsXml" function="GetQwsXml" />
+		<message-listener message="GetLogRecord" function="GetLogRecord" />
 	</controller>
 </controllers>
 	
@@ -50,7 +51,28 @@
 				<message name="xe.editConnection" value="EditConnection" />
 				<message name="xe.deleteConnection" value="DeleteConnection" />
 				<message name="xe.getQwsFile" value="GetQwsFile" />
+				<message name="xe.viewLog" value="ViewLog" />
 			</include>
+		</views>
+	</event-handler>
+	
+	<event-handler name="ViewLog" type="Secured,Templated">
+		<broadcasts>
+			<message name="GetConnection" />	
+		</broadcasts>
+		<views>
+			<include name="body" template="pages/logs.cfm">
+				<value name="xe.viewLogDetail" value="ViewLogDetail" />
+			</include>
+		</views>
+	</event-handler>
+	
+	<event-handler name="ViewLogDetail" type="Secured">
+		<broadcasts>
+			<message name="GetLogRecord" />	
+		</broadcasts>
+		<views>
+			<include name="body" template="pages/logDetail.cfm"/>
 		</views>
 	</event-handler>
 	

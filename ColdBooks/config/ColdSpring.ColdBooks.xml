@@ -13,6 +13,8 @@
 		</constructor-arg>
 	</bean>	
 	
+	<bean id="ColdBooksBeanTransformer" class="ColdBooks.model.validat.BeanTransformer" />
+	
 	<bean id="ColdBooksValidateUUID" class="ColdBooks.model.validat.validateUUID" />
 	
 	<!--// ************************************************** //-->
@@ -37,7 +39,19 @@
 			<value>qbwc</value>  
 		</property>  
 		<property name="remoteMethodNames">  
-			<value>serverVersion,clientVersion,authenticate,closeConnection,sendRequestXML,receiveResponseXML,getLastError</value>  
+			<value>serverVersion,clientVersion,authenticate,closeConnection,sendRequestXML,receiveResponseXML,getLastError,connectionError</value>  
+		</property>  
+	</bean>  
+	
+	<bean id="ColdBooksRemoteConnectionService" class="coldspring.aop.framework.RemoteFactoryBean" parent="ColdBooksAbstractRemoteProxy" lazy-init="false">  
+		<property name="target">  
+			<ref bean="ColdBooksConnectionService" />  
+		</property>  
+		<property name="serviceName">  
+			<value>RemoteConnectionService</value>  
+		</property>  
+		<property name="remoteMethodNames">  
+			<value>getConnectionLog</value>  
 		</property>  
 	</bean>  
 	

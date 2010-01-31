@@ -19,14 +19,19 @@ component accessors="true"{
 	function getConnectionByName(name){
 		return ColdBooksConnectionDAO.loadConnectionByName( name );
 	}
-
+	
 	function deleteConnection(id){
 		return ColdBooksConnectionDAO.deleteConnection( loadConnection( id ) );
 	} 
 	
 	function saveConnection( data ){
 		var result = 0;
-		var connection = ColdBooksConnectionFactory.newConnection();
+		
+		if(structkeyExists(data, "id") && Val(data.id)){
+			var connection = loadConnection(data.id);
+		} else {
+			var connection = ColdBooksConnectionFactory.newConnection();
+		}
 	
 		connection.populate(data);
 		
@@ -48,5 +53,14 @@ component accessors="true"{
 		return connection.getQwsXml();
 	}
 	
+	function getConnectionLog(id, page, pageSize, sortColumn, sortDirection){
+		var log = loadConnection(id).getLog(sortColumn, sortDirection);
+		return queryconvertforgrid(log, page, pageSize);
+	}
+	
+	function truncateLog(id){
+		// truncate the log 
+		loadConnection(id).truncateLog();
+	}
 	
 }

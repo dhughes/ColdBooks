@@ -40,6 +40,8 @@
 	<bean id="ColdBooksSecurityService" class="ColdBooks.model.service.SecurityService" />
 	<bean id="ColdBooksConnectionService" class="ColdBooks.model.service.ConnectionService" />
 	
+	<bean id="ColdBooksMessageService" class="ColdBooks.model.service.MessageService" />
+	
 	<bean id="ColdBooksDatasource" class="ColdBooks.modelglue.Bean.CommonBeans.Datasource">
 		<property name="dsn">
 			<value>ColdBooksData</value>

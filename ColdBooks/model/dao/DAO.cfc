@@ -28,7 +28,7 @@ component output="false" accessors="true"
 					query.addParam(name=properties[x].name, value=Iif(value, De('1'), De('0')));
 				} else if(IsDate(value) AND properties[x].type IS "any"){
 					
-					query.addParam(name=properties[x].name, value=value, cfsqltype="CF_SQL_DATE");
+					query.addParam(name=properties[x].name, value=value, cfsqltype="cf_sql_timestamp");
 				} else {
 					query.addParam(name=properties[x].name, value=value);
 				}

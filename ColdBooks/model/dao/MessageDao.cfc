@@ -160,6 +160,33 @@ component extends="DAO" output="false" accessors="true"
 		
 		return result.count;
 	}
+
+	function getMessageHistory(connectionId, sortColumn, sortDirection){
+	
+		var query = new Coldbooks.model.cf.Query(sql="
+			SELECT id, request, response, callbackCfc, callbackFunction, returnFormat, createdDate, modifiedDate, error
+			FROM QbMessage
+			WHERE connectionId = :connectionId
+			ORDER BY #Iif(len(sortColumn), De(sortColumn), De('id'))# #sortDirection#
+		", datasource=getDsn());
+		query.addParam(name="connectionId", value=connectionId);
+		var result = query.execute().getResult();
+		
+		for(var x = 1 ; x <= result.recordCount ; x++){
+			querySetCell(result,"request",htmlEditFormat(result["request"][x]),x);
+			querySetCell(result,"response",htmlEditFormat(result["response"][x]),x);	
+		}
+		
+		return result;
+	}
+
+	function getErroredRequestCountForConnection(connectionId){
+		var query = new Coldbooks.model.cf.Query(sql="SELECT COUNT(*) as count FROM QbMessage WHERE connectionId = :connectionId AND error IS NOT NULL", datasource=getDsn());
+		query.addParam(name="connectionId", value=connectionId);
+		var result = query.execute().getResult();
+		
+		return result.count;
+	}
 	
 	function getMessageByMessageIdInQBFormat(messageId){
 		// "fix" the messageId
@@ -179,6 +206,53 @@ component extends="DAO" output="false" accessors="true"
 		return entity;
 	}
 	
-	
+	function truncateLogs(numeric connectionId, logRetention, logTruncation){
+		var truncationDate = dateAdd("d", -logTruncation, now());
+		// let's start out by deleting old log entries (past the truncation days)
+		// note, we never delete incomplete (no response or errors)
+		var sql = "
+			DELETE FROM QbMessage
+			WHERE connectionId = :connectionId
+				AND NOT (
+					response IS NULL AND error IS NULL 
+				)
+				AND createdDate < Timestamp('#DateFormat(truncationDate, "yyyymmdd")##TimeFormat(truncationDate, "hhmmss")#') 
+		";
+		
+		var query = new Coldbooks.model.cf.Query( sql=sql, datasource=getDsn() );
+		query.addParam(name="connectionId", value=connectionId);
+		query.execute();
+		
+		// next, we should have a smaller set of messages left (at least in theory).
+		// from that set we need to delete anything that's is NOT to be retained.
+		// for exampole, we need to delete any completed entries (but not errors)
+		// if the logRetention value is "errors".  We don't delete anything if it's
+		// set to "all"
+		sql = "";
+		
+		if(logRetention IS "errored"){
+			sql = "
+				DELETE FROM QbMessage
+				WHERE connectionId = :connectionId
+					AND response IS NOT NULL
+					AND error IS NULL 
+			";
+		} else if (logRetention IS "none"){
+		 	sql = "
+				DELETE FROM QbMessage
+				WHERE connectionId = :connectionId
+					AND (
+						response IS NOT NULL
+						OR error IS NOT NULL
+					) 
+			";
+		}
+		
+		if(len(sql)){
+			var query = new Coldbooks.model.cf.Query( sql=sql, datasource=getDsn() );
+			query.addParam(name="connectionId", value=connectionId);
+			query.execute();
+		}
+	}
 
 }

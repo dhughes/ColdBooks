@@ -23,7 +23,7 @@
 	<!-- data set definitions -->
 	<dataSets>
 
-		<dataSet name="Connection">
+		<dataSet name="Connection" transformer="transformOrm">
 
 			<dataElement name="name" required="true" message="Please provide the connection name.">
 				<assert rule="length" >
@@ -58,6 +58,14 @@
 			<dataElement name="isReadOnly" required="true" message="Please indicate if the service is read-only." />
 
 			<dataElement name="personalDataPref" required="true" message="Please select a personal data setting." />
+
+			<dataElement name="logRetention" required="true" message="Please select a log retention setting." />
+
+			<dataElement name="logTruncation" required="true" message="Please select a log retention setting.">
+				<assert rule="numeric">
+					<message name="invalid" value="The log retention value is not numeric." />
+				</assert>
+			</dataElement>
 
 			<dataElement name="connectionId" required="true" message="Please provide a valid UUID value.">
 				<assert rule="uuid">

@@ -70,7 +70,11 @@
 		<cfset event.setValue("qwsXml", beans.ColdBooksConnectionService.getQwsXml( event.getValue("id") )) />
 	</cffunction>
 	
-	
+	<cffunction name="GetLogRecord">
+		<cfargument name="event" />
+		
+		<cfset event.setValue("message", beans.ColdBooksMessageService.loadMessage( event.getValue("id") )) />
+	</cffunction>
 	
 	
 	

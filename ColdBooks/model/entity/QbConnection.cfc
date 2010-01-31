@@ -17,6 +17,8 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	property name="fileId" type="string";
 	property name="isReadOnly" type="boolean";
 	property name="connectionId" type="string"; // this is translated into the owner Id
+	property name="logRetention" type="string";
+	property name="logTruncation" type="any";
 	property name="personalDataPref" type="string";
 	property name="schedulerInterval" type="string";
 	property name="schedulerUnit" type="string";
@@ -93,6 +95,14 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	function getRequestStatus(messageId){
 		var Message = getColdBooksMessageDao().getMessageByMessageId(messageId);
 		return Message.getStatus();
+	}
+	
+	function getLog(sortColumn, sortDirection){
+		return getColdBooksMessageDao().getMessageHistory(getId(), sortColumn, sortDirection);
+	}
+	
+	function truncateLog(){
+		getColdBooksMessageDao().truncateLogs(getId(), getLogRetention(), getlogTruncation());
 	}
 	
 	function wrapXmlRequests(xml){
@@ -206,6 +216,10 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	
 	function getPendingRequestCount(){
 		return getColdBooksMessageDao().getPendingRequestCountForConnection(getId());
+	}
+	
+	function getErroredRequestCount(){
+		return getColdBooksMessageDao().getErroredRequestCountForConnection(getId());
 	}
 		
 	private function validateReturnFormat(returnFormat){

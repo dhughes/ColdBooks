@@ -40,6 +40,10 @@
 		<cfif Connection.comparePassword(password)>
 			<!--- we're good --->
 			
+			<!--- set the last connection time --->
+			<cfset Connection.setLastConnectionDateTime(now()) />
+			<cfset getColdBooksConnectionDao().saveConnection(Connection) />
+						
 			<!--- create a new connection session --->
 			<cfset result[1] = getColdBooksSession().newSession(username, Connection) />
 			<!--- is there work to do? --->
@@ -71,7 +75,10 @@
 
 	<cffunction name="closeConnection" access="public" returntype="Any">
 		<cfargument name="ticket" type="String" />
-		<cfset result = "Rock On!" />
+		<cfset var result = "Rock On!" />
+		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
+		
+		<cfset Connection.truncateLog() />
 		
 		<!---<cflog text="Session Ran for: #getColdBooksSession().getDuration(ticket)# ms" />--->
 		
@@ -115,6 +122,18 @@
 		<cfreturn Connection.wrapXmlRequests(xml) />
 	</cffunction>
 	
+	<cffunction name="connectionError" access="public" returntype="Any">
+		<cfargument name="ticket" type="String" />
+		<cfargument name="hresult" type="String" />
+		<cfargument name="message" type="String" />
+		
+		<cflog text="#arguments.toString()#" />
+		
+		<cfset Connection.truncateLog() />
+		
+		<cfreturn "done" />
+	</cffunction>
+	
 	<cffunction name="receiveResponseXML" access="public" returntype="Any">
 		<cfargument name="wcTicket" type="String" />
 		<cfargument name="response" type="String" />
@@ -156,6 +175,8 @@
 		</cfif>
 		
 		<cfset var pendingRequests = Connection.getPendingRequestCount() />
+		
+		<cfset Connection.truncateLog() />
 		
 		<cfreturn JavaCast("int", 100 - round((pendingRequests/totalRequests)*100)) />
 	</cffunction>
