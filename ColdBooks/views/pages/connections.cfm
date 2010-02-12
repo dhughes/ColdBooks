@@ -10,7 +10,7 @@
 <p>ColdBooks allows you to establish connections to QuickBooks via the QuickBooks Web Connector.</p>
 
 <cfoutput>
-	<p>For a quick overview of QuickBooks integration, <a href="#event.linkTo(xe.integration)#">read this</a>.</p>
+	<!---<p>For a quick overview of QuickBooks integration, <a href="#event.linkTo(xe.integration)#">read this</a>.</p>--->
 	
 	<!--- create a new connection --->
 	<table border="0" cellpadding="5" cellspacing="0" width="100%">
