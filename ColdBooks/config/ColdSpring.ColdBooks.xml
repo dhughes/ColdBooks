@@ -3,20 +3,7 @@
 
 <beans default-autowire="byName"> 
 	
-	<!--// ************************************************** //-->
-	<!--// Validat configuration //-->
-	<import resource="/Validat/config/Validat.xml" /> 
 
-	<bean id="Validat" parent="ValidatCore">
-		<constructor-arg name="pathToConfigXML">
-			<value>/ColdBooks/config/Validat.xml</value>
-		</constructor-arg>
-	</bean>	
-	
-	<bean id="ColdBooksBeanTransformer" class="ColdBooks.model.validat.BeanTransformer" />
-	
-	<bean id="ColdBooksValidateUUID" class="ColdBooks.model.validat.validateUUID" />
-	
 	<!--// ************************************************** //-->
 	<!--// Remote Service Configuration //-->
 	<bean id="ColdBooksAbstractRemoteProxy" class="" abstract="true">

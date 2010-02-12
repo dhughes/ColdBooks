@@ -2,7 +2,20 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans default-autowire="byName"> 
+	<!--// ************************************************** //-->
+	<!--// Validat configuration //-->
+	<import resource="/Validat/config/Validat.xml" /> 
 
+	<bean id="Validat" parent="ValidatCore">
+		<constructor-arg name="pathToConfigXML">
+			<value>/ColdBooks/config/Validat.xml</value>
+		</constructor-arg>
+	</bean>	
+	
+	<bean id="ColdBooksBeanTransformer" class="ColdBooks.model.validat.BeanTransformer" />
+	
+	<bean id="ColdBooksValidateUUID" class="ColdBooks.model.validat.validateUUID" />
+	
 	<!--// ************************************************** //-->
 	<!--// Mark Mandel's excellent Java Loader (with one minor extension) //-->
 	<bean id="ColdBooksJavaLoader" class="ColdBooks.model.javaloader.ExpandingJavaLoader">
