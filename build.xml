@@ -1,0 +1,19 @@
+<project name=" Build Script" default="Build">
+	
+	<target name="Build">
+		
+		<mkdir dir="temp"/>
+		
+		<exec executable="svn" failifexecutionfails="true">
+			<arg line="export http://svn.alagad.com/ColdBooks/trunk/ temp --force" />
+		</exec>
+		
+		<delete dir="temp/.project"/>
+		
+		<zip destfile="ColdBooks.zip" basedir="temp" />
+
+		<delete dir="temp"/>
+
+	</target>
+
+</project>
