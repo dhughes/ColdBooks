@@ -4,7 +4,7 @@
 <beans default-autowire="byName"> 
 	<!--// ************************************************** //-->
 	<!--// Validat configuration //-->
-	<import resource="/Validat/config/Validat.xml" /> 
+	<import resource="/ColdBooks/Validat/config/Validat.xml" /> 
 
 	<bean id="Validat" parent="ValidatCore">
 		<constructor-arg name="pathToConfigXML">

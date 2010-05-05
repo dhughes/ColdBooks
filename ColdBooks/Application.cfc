@@ -19,6 +19,7 @@
 	<cfset this.mappings["/ColdBooks"] = this.mapRoot />
 	<cfset this.mappings["/coldspring"] = this.mapRoot & "/coldspring" />
 	<cfset this.mappings["/modelglue"] = this.mapRoot & "/modelglue" />
+	<cfset this.mappings["/validat"] = this.mapRoot & "/validat" />
 
 	<cffunction name="databaseExists" access="private">
 		<cftry>
