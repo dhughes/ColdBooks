@@ -85,26 +85,26 @@ component extends="DAO" output="false" accessors="true"
 			)
 			VALUES
 			(
-				:name,
-				:description,
-				:passwordHash,
-				:supportUrl,
-				:webserviceUrl,
-				:fileId,
-				:isReadOnly,
-				:connectionId,
-				:personalDataPref,
-				:schedulerInterval,
-				:schedulerUnit,
-				:logRetention,
-				:logTruncation,
-				:lastConnectionDateTime,
-				:companyFile,
-				:country,
-				:qbXmlMajorVersion,
-				:qbXmlMinorVersion,
-				:createdDate,
-				:modifiedDate
+				:name ,
+				:description ,
+				:passwordHash ,
+				:supportUrl ,
+				:webserviceUrl ,
+				:fileId ,
+				:isReadOnly ,
+				:connectionId ,
+				:personalDataPref ,
+				:schedulerInterval ,
+				:schedulerUnit ,
+				:logRetention ,
+				:logTruncation ,
+				:lastConnectionDateTime ,
+				:companyFile ,
+				:country ,
+				:qbXmlMajorVersion ,
+				:qbXmlMinorVersion ,
+				:createdDate ,
+				:modifiedDate 
 			)
 		", datasource=getDsn());
 		
