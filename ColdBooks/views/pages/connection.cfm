@@ -154,16 +154,16 @@
 			</td>
 			<td>
 				<cfinput type="radio" name="logRetention" value="all" checked="#event.getValue("logRetention", connection.getLogRetention()) IS 'all'#" />
-				Retail all logs. (May include sensitive or personal information from QuickBooks.)<br />
+				Retain all logs. (May include sensitive or personal information from QuickBooks.)<br />
 				
 				<cfinput type="radio" name="logRetention" value="errored" checked="#event.getValue("logRetention", connection.getLogRetention()) IS 'errored'#" />
 				Retain only errored requests. (May include sensitive or personal information when CFC callbacks throw errors.)<br />
 				
 				<cfinput type="radio" name="logRetention" value="none" checked="#event.getValue("logRetention", connection.getLogRetention()) IS 'none'#" />
-				Retail no logs. (Will not include sensitive or personal information from QuickBooks nor any other useful debugging information.)<br />
+				Retain no logs. (Will not include sensitive or personal information from QuickBooks nor any other useful debugging information.)<br />
 				
 				<small>ColdBooks stores requests in a database until they are fulfilled.  For record keeping or debugging purposes you can keep a log of requests and their responses or error messages. 
-				However, certian requests may include sensitive or personal information such as social security numbers, account numbers, and more.  You should consider how you want to store that information.</small>
+				However, certain requests may include sensitive or personal information such as social security numbers, account numbers, and more.  You should consider how you want to store that information.</small>
 				
 				<v:validationErrors validation="#errors#" property="logRetention" />
 			</td>
