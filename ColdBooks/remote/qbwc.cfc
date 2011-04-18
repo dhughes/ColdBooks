@@ -138,12 +138,46 @@
 		
 	</cffunction>
 			
-	<cffunction name="receiveResponseXML" access="remote" returntype="any" > 
+	<cffunction name="sendRequestXML" access="remote" returntype="any" > 
+<cfargument name="ticket" type="String" /> 
+<cfargument name="strHCPResponse" type="String" /> 
+<cfargument name="strCompanyFileName" type="String" /> 
+<cfargument name="qbXMLCountry" type="String" /> 
+<cfargument name="qbXMLMajorVers" type="Any" /> 
+<cfargument name="qbXMLMinorVers" type="Any" /> 
+<cfset var rtn = callMethod('sendRequestXML', arguments) />
+<cfif isDefined('rtn')><cfreturn rtn /></cfif>
+</cffunction>
+
+<cffunction name="serverVersion" access="remote" returntype="any" > 
+<cfset var rtn = callMethod('serverVersion', arguments) />
+<cfif isDefined('rtn')><cfreturn rtn /></cfif>
+</cffunction>
+
+<cffunction name="clientVersion" access="remote" returntype="any" > 
+<cfargument name="strVersion" type="string" /> 
+<cfset var rtn = callMethod('clientVersion', arguments) />
+<cfif isDefined('rtn')><cfreturn rtn /></cfif>
+</cffunction>
+
+<cffunction name="getLastError" access="remote" returntype="any" > 
+<cfargument name="ticket" type="String" /> 
+<cfset var rtn = callMethod('getLastError', arguments) />
+<cfif isDefined('rtn')><cfreturn rtn /></cfif>
+</cffunction>
+
+<cffunction name="receiveResponseXML" access="remote" returntype="any" > 
 <cfargument name="wcTicket" type="String" /> 
 <cfargument name="response" type="String" /> 
 <cfargument name="hresult" type="String" /> 
 <cfargument name="message" type="String" /> 
 <cfset var rtn = callMethod('receiveResponseXML', arguments) />
+<cfif isDefined('rtn')><cfreturn rtn /></cfif>
+</cffunction>
+
+<cffunction name="closeConnection" access="remote" returntype="any" > 
+<cfargument name="ticket" type="String" /> 
+<cfset var rtn = callMethod('closeConnection', arguments) />
 <cfif isDefined('rtn')><cfreturn rtn /></cfif>
 </cffunction>
 
@@ -155,44 +189,10 @@
 <cfif isDefined('rtn')><cfreturn rtn /></cfif>
 </cffunction>
 
-<cffunction name="clientVersion" access="remote" returntype="any" > 
-<cfargument name="strVersion" type="string" /> 
-<cfset var rtn = callMethod('clientVersion', arguments) />
-<cfif isDefined('rtn')><cfreturn rtn /></cfif>
-</cffunction>
-
-<cffunction name="sendRequestXML" access="remote" returntype="any" > 
-<cfargument name="ticket" type="String" /> 
-<cfargument name="strHCPResponse" type="String" /> 
-<cfargument name="strCompanyFileName" type="String" /> 
-<cfargument name="qbXMLCountry" type="String" /> 
-<cfargument name="qbXMLMajorVers" type="Any" /> 
-<cfargument name="qbXMLMinorVers" type="Any" /> 
-<cfset var rtn = callMethod('sendRequestXML', arguments) />
-<cfif isDefined('rtn')><cfreturn rtn /></cfif>
-</cffunction>
-
 <cffunction name="authenticate" access="remote" returntype="any" > 
 <cfargument name="username" type="string" /> 
 <cfargument name="password" type="string" /> 
 <cfset var rtn = callMethod('authenticate', arguments) />
-<cfif isDefined('rtn')><cfreturn rtn /></cfif>
-</cffunction>
-
-<cffunction name="getLastError" access="remote" returntype="any" > 
-<cfargument name="ticket" type="String" /> 
-<cfset var rtn = callMethod('getLastError', arguments) />
-<cfif isDefined('rtn')><cfreturn rtn /></cfif>
-</cffunction>
-
-<cffunction name="serverVersion" access="remote" returntype="any" > 
-<cfset var rtn = callMethod('serverVersion', arguments) />
-<cfif isDefined('rtn')><cfreturn rtn /></cfif>
-</cffunction>
-
-<cffunction name="closeConnection" access="remote" returntype="any" > 
-<cfargument name="ticket" type="String" /> 
-<cfset var rtn = callMethod('closeConnection', arguments) />
 <cfif isDefined('rtn')><cfreturn rtn /></cfif>
 </cffunction>
 

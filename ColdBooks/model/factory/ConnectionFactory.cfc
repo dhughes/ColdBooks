@@ -18,6 +18,7 @@ component output="false" accessors="true"
 	{
 		var Connection =  new ColdBooks.model.entity.QbConnection();
 		Connection.setConnectionId(createUUID());
+		Connection.setFileId(createUUID());
 		Connection.setColdBooksJavaLoader(getColdBooksJavaLoader());
 		Connection.setColdBooksMessageFactory(getColdBooksMessageFactory());
 		Connection.setColdBooksMessageDao(getColdBooksMessageDao());
