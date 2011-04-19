@@ -29,6 +29,34 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	property name="qbXmlMinorVersion" type="string";
 	property name="createdDate" type="any";
 	property name="modifiedDate" type="any";
+
+	function getSdkVersion(){
+		var sdkVersion = getQbXmlMajorVersion() & getQbXmlMinorVersion();
+
+		// does this SDK exist?
+		var list = directoryList(expandPath("/ColdBooks/java/bin/com/alagad/ColdBooks/#ucase(getCountry())#"), false, "name", "v*");
+		var versions = [];
+		// loop over the list and create an array of versions
+		for(var i = 1 ; i <= ArrayLen(list) ; i++){
+			arrayAppend(versions, Right(list[i], Len(list[i])-1));
+		}
+
+		// sort the versions
+		arraySort(versions, "numeric");
+
+		// loop over the versions and see if the sdkVersion we're provided exits.
+		// if not, then return the last one.
+		for(var i = 1 ; i <= ArrayLen(versions) ; i++){
+			if(versions[i] == sdkVersion){
+				return sdkVersion;
+			} else if(versions[i] > sdkVersion){
+				return versions[i-1];
+			}
+		}
+
+		// should never get here
+		throw("should never have gotten here!!");
+	}
 	
 	function sendXmlRequest(xml, callbackCFC, callbackFunction, returnFormat){
 		// this needs to create and record a message
@@ -70,15 +98,15 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		QBXML.setQBXMLMsgsRq(QBXMLMsgsRq);
 		
 		// get the XML for the request
-		var xml = getColdBooksTranslator().toQBXML(QBXML, getcountry(), getqbXmlMajorVersion(), getqbXmlMinorVersion());
+		var xml = getColdBooksTranslator().toQBXML(QBXML, this);
 		
 		// just a couple of convenience variables
-		var xmlBegin = '<?xml version="1.0" encoding="UTF-8" ?><?qbxml version="#getqbXmlMajorVersion()#.#getqbXmlMinorVersion()#" ?><QBXML><QBXMLMsgsRq onError="continueOnError">';
+		var xmlBegin = '<?xml version="1.0" encoding="UTF-8" ?><?qbxml version="#getSdkVersion()#" ?><QBXML><QBXMLMsgsRq onError="continueOnError">';
 		var xmlEnd = '</QBXMLMsgsRq></QBXML>';
 		
 		// get the request from the full message
 		xml = Mid(xml, len(xmlBegin) + 1, Len(xml) - len(xmlBegin) - len(xmlEnd));
-					
+
 		// add the request to the message and save it.
 		message.setRequest(xml);
 		message.setCallbackType("component");
@@ -142,7 +170,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		
 		if(returnFormat == "object"){
 			// we need to create a complete response object, serialize it then get the specific object back.
-			response = getColdBooksTranslator().toObjects(wrapXmlResponse(response), getcountry(), getqbXmlMajorVersion(), getqbXmlMinorVersion());
+			response = getColdBooksTranslator().toObjects(wrapXmlResponse(response), this);
 			response = response.getQBXMLMsgsRs().getHostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs();
 		}
 		
@@ -236,7 +264,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		}
 
 		// I've got my loader, I now need to get the object factory for this country and version
-		return loader.create("com.alagad.ColdBooks.#ucase(getCountry())#.v#getQbXmlMajorVersion()##getQbXmlMinorVersion()#.ObjectFactory");
+		return loader.create("com.alagad.ColdBooks.#ucase(getCountry())#.v#getSdkVersion()#.ObjectFactory");
 	}
 	
 	function setPassword(password){

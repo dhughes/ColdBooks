@@ -156,7 +156,17 @@ component extends="DAO" output="false" accessors="true"
 	public function deleteConnection( Connection )
 	{
 		Connection.setModifiedDate(now());
-	
+
+		// delete messages for this connection
+		var query = new Coldbooks.model.cf.Query(sql="
+			DELETE FROM QbMessage
+			WHERE connectionId = :id
+		", datasource=getDsn());
+
+		bindQueryToObjet(query, Connection);
+		query.execute();
+
+		// delete the connection
 		var query = new Coldbooks.model.cf.Query(sql="
 			DELETE FROM QbConnection
 			WHERE id = :id

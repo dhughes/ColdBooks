@@ -4,7 +4,10 @@
 <beans default-autowire="byName"> 
 	<!--// ************************************************** //-->
 	<!--// Validat configuration //-->
+	<!-- note that I'm importing twice. Depending on how CB is being used we may or may not
+	 have a /ColdBooks mapping.  If we don't for some reason the CFIDE version will work -->
 	<import resource="/CFIDE/administrator/ColdBooks/validat/config/validat.xml" />
+	<import resource="/ColdBooks/validat/config/validat.xml" />
 
 	<bean id="Validat" parent="ValidatCore">
 		<constructor-arg name="pathToConfigXML">
