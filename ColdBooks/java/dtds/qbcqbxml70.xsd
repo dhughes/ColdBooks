@@ -1203,7 +1203,14 @@
 	</xsd:simpleType>
 </xsd:element>
 <xsd:element name="Abbreviation" type="STRTYPE"/>
-<xsd:element name="ConversionRatio" type="PRICETYPE"/>
+<xsd:element name="ConversionRatio">
+	<xsd:simpleType>
+		<xsd:restriction base="PRICETYPE">
+			<xsd:maxInclusive value="5000"/>
+			<xsd:minInclusive value=".001"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:element>
 <xsd:element name="UnitUsedFor">
 	<xsd:simpleType>
 		<xsd:restriction base="ENUMTYPE">

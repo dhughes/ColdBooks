@@ -39,6 +39,8 @@ component accessors="true"{
 		
 		if(result._errorCount IS 0){
 			ColdBooksConnectionDAO.saveConnection(connection);
+			// this runs an initial query so we can get the basic version info
+			connection.sendXmlRequest("<CompanyQueryRq />", expandPath("/ColdBooks/model/handler/CompanyRequestHandler.cfc"), "handleCompanyRequest", "xml");
 		}
 		
 		return result;

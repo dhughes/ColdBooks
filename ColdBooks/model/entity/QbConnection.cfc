@@ -230,7 +230,11 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	
 	function getQbObjectFactory(){
 		var loader = getColdBooksJavaLoader();
-		
+
+		if(!Len(getCountry()) || !Len(getQbXmlMajorVersion()) || !Len(getQbXmlMinorVersion())){
+			throw(message="The QuickBooks Has Not Yet Connected", detail="The quickbooks instance for the connection #getName()# has not yet connected. QuickBooks must connect at least once before ColdBooks can enqueue messages for it.");
+		}
+
 		// I've got my loader, I now need to get the object factory for this country and version
 		return loader.create("com.alagad.ColdBooks.#ucase(getCountry())#.v#getQbXmlMajorVersion()##getQbXmlMinorVersion()#.ObjectFactory");
 	}

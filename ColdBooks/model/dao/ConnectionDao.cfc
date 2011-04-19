@@ -39,6 +39,10 @@ component extends="DAO" output="false" accessors="true"
 		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbConnection WHERE name = :name", datasource=getDsn());
 		query.addParam(name="name", value=name);
 		connection = query.execute().getResult();
+
+		if(!connection.recordCount){
+			throw("Could Not Find Coldbooks Connection named '#name#'");
+		}
 		
 		var entity = getColdBooksConnectionFactory().newConnection();
 		entity.populateFromQuery(connection, 1);
