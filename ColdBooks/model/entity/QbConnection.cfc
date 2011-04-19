@@ -188,14 +188,14 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 			requestId="#requestId#"
 		{
 			var CFCProxy = CreateObject("Java", "coldfusion.cfc.CFCProxy").init(cfc);
-			CFCProxy.invoke(method, [response, requestId]);
+			CFCProxy.invoke(method, [response, requestId], getPageContext().getRequest(), getPageContext().getResponse());
 		}
 		
 		// join the thread....
 		thread
 			action="join"
 			name="#requestId#";
-		
+
 		// save any errors
 		if(structKeyExists(cfthread[requestId], "error")){
 			var Message = getColdBooksMessageDao().getMessageByMessageIdInQBFormat(requestId);
