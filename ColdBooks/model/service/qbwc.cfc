@@ -7,12 +7,25 @@
 	<cfproperty name="version" type="any" />
 	<cfproperty name="runAsBatch" type="boolean" />
 
+	<cffunction name="raiseEvent" access="private" returntype="void">
+		<cfargument name="Connection" />
+		<cfargument name="event" />
+		<cfargument name="data" />
+        <!--- get the connection the user is connecting to and have it handle the event --->
+        <cfset arguments.Connection.handleEvent(event=event, data=data) />
+	</cffunction>
+
 	<cffunction name="serverVersion" access="public" returntype="Any">
-		<cfreturn getVersion() />
+		<cfset var version = getVersion() />
+		<!---<cfset raiseEvent("onServerVersion", {version=version}) />--->
+		<cfreturn version />
 	</cffunction>
 	
 	<cffunction name="clientVersion" access="public" returntype="Any">
 		<cfargument name="strVersion" type="string" />
+
+		<!---<cfset raiseEvent("onBeforeClientVersion", arguments) />--->
+
 		<cfset var result = "" />
 		
 		<!--- this system requires the QBWC 2.0.0.116 or better --->
@@ -24,18 +37,22 @@
 		<cfelseif version[1] IS 2 AND version[2] IS 0 AND version[3] IS 0 AND version[4] LT 116>
 			<cfset result = "W: You are using QBWC version #strVersion#.  ColdBooks has only been designed to work with version 2.0.0.116 or later." />
 		</cfif>
-		
+
+		<!---<cfset raiseEvent("onAfterClientVersion", mergeStructs(arguments, {result=result, version=version}) ) />--->
+
 		<cfreturn result />
 	</cffunction>
 
 	<cffunction name="authenticate" access="public" returntype="Any">
 		<cfargument name="username" type="string" />
 		<cfargument name="password" type="string" />
+        <!--- get the connection the user is connecting to --->
+        <cfset var Connection = getColdBooksConnectionService().getConnectionByConnectionId(username) />
+
+		<cfset raiseEvent(Connection, "onBeforeAuthenticate", arguments ) />
+
 		<cfset var result = ArrayNew(1) />
-		
-		<!--- get the connection the user is connecting to --->
-		<cfset var Connection = getColdBooksConnectionService().getConnectionByConnectionId(username) />
-		
+
 		<!--- validate this connection's password --->
 		<cfif Connection.comparePassword(password)>
 			<!--- we're good --->
@@ -68,22 +85,27 @@
 			<cfset result[3] = "" />
 			<cfset result[4] = "" /> 
 		</cfif>
-		
+
+		<cfset raiseEvent(Connection, "onAfterAuthenticate", mergeStructs(arguments, {result=result}) ) />
+
 		<!--- return the array as a Java array --->
 		<cfreturn convertToJavaArray(result) />
 	</cffunction>
 
 	<cffunction name="closeConnection" access="public" returntype="Any">
-		<cfargument name="ticket" type="String" />
+		<cfargument name="ticket" type="String" />c
+
 		<cfset var result = "Rock On!" />
 		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
-		
+
 		<cfset Connection.truncateLog() />
 		
 		<!---<cflog text="Session Ran for: #getColdBooksSession().getDuration(ticket)# ms" />--->
 		
 		<cfset getColdBooksSession().deleteSession(ticket) />
 		
+		<cfset raiseEvent(Connection, "onCloseConnection", mergeStructs(arguments, {result=result}) ) />
+
 		<cfreturn result />
 	</cffunction>
 	
@@ -94,8 +116,8 @@
 		<cfargument name="qbXMLCountry" type="String" />
 		<cfargument name="qbXMLMajorVers" type="Any" />
 		<cfargument name="qbXMLMinorVers" type="Any" />
+
 		<cfset var ColdBooksSession = getColdBooksSession() />
-		<cfset var result = "" />
 		
 		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
 		
@@ -118,14 +140,21 @@
 		<cfelse>
 			<cfset var xml = Connection.getNextPendingMessageXml() />
 		</cfif>
+
+		<cfset var wrappedXml = Connection.wrapXmlRequests(xml) />
+
+		<cfset raiseEvent(Connection, "onSendRequest", mergeStructs(arguments, {xml=xml, wrappedXml=wrappedXml}) ) />
 		
-		<cfreturn Connection.wrapXmlRequests(xml) />
+		<cfreturn wrappedXml />
 	</cffunction>
 	
 	<cffunction name="connectionError" access="public" returntype="Any">
 		<cfargument name="ticket" type="String" />
 		<cfargument name="hresult" type="String" />
 		<cfargument name="message" type="String" />
+		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
+
+		<cfset raiseEvent(Connection, "onConnectionError", arguments ) />
 		
 		<cflog text="#arguments.toString()#" />
 		
@@ -139,10 +168,13 @@
 		<cfargument name="response" type="String" />
 		<cfargument name="hresult" type="String" />
 		<cfargument name="message" type="String" />
-		<cfset var ColdBooksSession = getColdBooksSession() />
+
+        <cfset var ColdBooksSession = getColdBooksSession() />
 		<cfset var Connection = ColdBooksSession.getConnection(wcTicket) />
 		<cfset var totalRequests = ColdBooksSession.getTotalRequests(wcTicket) />
-		
+
+		<cfset raiseEvent(Connection, "onBeforeReceiveResponseXML", mergeStructs(arguments, {ColdBooksSession=ColdBooksSession, totalRequests=totalRequests})) />
+
 		<!--- is the response an error message? --->
 		<cfif NOT Len(response)>
 			<!---
@@ -177,13 +209,21 @@
 		<cfset var pendingRequests = Connection.getPendingRequestCount() />
 		
 		<cfset Connection.truncateLog() />
-		
-		<cfreturn JavaCast("int", 100 - round((pendingRequests/totalRequests)*100)) />
+
+		<cfset var percentDone = 100 - round((pendingRequests/totalRequests)*100) />
+
+		<cfset raiseEvent(Connection, "onAfterReceiveResponseXML", mergeStructs(arguments, {pendingRequests=pendingRequests, ColdBooksSession=ColdBooksSession, totalRequests=totalRequests, percentDone=percentDone}) ) />
+
+		<cfreturn JavaCast("int", percentDone) />
 	</cffunction>
 	
 	<cffunction name="getLastError" access="public" returntype="Any">
 		<cfargument name="ticket" type="String" />
 		<cfset var error = getColdBooksSession().getError(ticket) />
+		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
+
+		<cfset raiseEvent(Connection, "onGetLastError", mergeStructs(arguments, {error=error}) ) />
+
 		<cfreturn "#error.message# | #error.detail# | #error.tagcontext[1].template# (#error.tagcontext[1].line#)" />
 	</cffunction>
 	
@@ -204,7 +244,18 @@
 	<cffunction name="setError" access="public" hint="In the case that something in this component throws an error, something out (advice) can catch it and set it back in here to associate with the session. This will allow it to be reported back to the QBWC">
 		<cfargument name="connectionId" type="String" />
 		<cfargument name="error" type="String" />
+		<cfset var Connection = getColdBooksConnectionService().getConnectionByConnectionId(username) />
+
+		<cfset raiseEvent(Connection, "onError", arguments) />
+
 		<cfset getColdBooksSession().setError(connectionId, error) />		
+	</cffunction>
+
+	<cffunction name="mergeStructs" access="private">
+		<cfargument name="struct1" />
+		<cfargument name="struct2" /> />
+		<cfset StructAppend(struct1, struct2) />
+		<cfreturn struct1 />
 	</cffunction>
 
 </cfcomponent>

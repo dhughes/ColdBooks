@@ -85,7 +85,8 @@ component extends="DAO" output="false" accessors="true"
 				qbXmlMajorVersion,
 				qbXmlMinorVersion,
 				createdDate,
-				modifiedDate
+				modifiedDate,
+				eventListeners
 			)
 			VALUES
 			(
@@ -108,7 +109,8 @@ component extends="DAO" output="false" accessors="true"
 				:qbXmlMajorVersion ,
 				:qbXmlMinorVersion ,
 				:createdDate ,
-				:modifiedDate 
+				:modifiedDate ,
+				:eventListeners
 			)
 		", datasource=getDsn());
 		
@@ -144,7 +146,8 @@ component extends="DAO" output="false" accessors="true"
 				qbXmlMajorVersion = :qbXmlMajorVersion, 
 				qbXmlMinorVersion = :qbXmlMinorVersion,
 				createdDate = :createdDate,
-				modifiedDate = :modifiedDate
+				modifiedDate = :modifiedDate,
+				eventListeners = :eventListeners
 			WHERE id = :id
 		", datasource=getDsn());
 		

@@ -50,7 +50,8 @@ component extends="DAO" output="false" accessors="true"
 				returnFormat,
 				error,
 				createdDate,
-				modifiedDate
+				modifiedDate,
+				runAfterDateTime
 			)
 			VALUES
 			(
@@ -64,7 +65,8 @@ component extends="DAO" output="false" accessors="true"
 				:returnFormat,
 				:error,
 				:createdDate,
-				:modifiedDate
+				:modifiedDate,
+				:runAfterDateTime
 			)
 		", datasource=getDsn());
 		
@@ -91,7 +93,8 @@ component extends="DAO" output="false" accessors="true"
 				returnFormat = :returnFormat,
 				error = :error,
 				createdDate = :createdDate,
-				modifiedDate = :modifiedDate
+				modifiedDate = :modifiedDate,
+				runAfterDateTime = :runAfterDateTime
 			WHERE id = :id
 		", datasource=getDsn());
 		
@@ -115,7 +118,7 @@ component extends="DAO" output="false" accessors="true"
 	}
 	
 	function connectionHasPendingRequests(connectionId){
-		return getPendingRequestCountForConnection(connectionId) GT 0;
+		return getPendingRequestCountForConnection(connectionId, true) GT 0;
 	}
 	
 	function getNextPendingMessageForConnection(connectionId){
@@ -126,6 +129,7 @@ component extends="DAO" output="false" accessors="true"
 			WHERE connectionId = :connectionId
 				AND response IS NULL
 				AND error IS NULL
+				AND (runAfterDateTime IS NULL OR runAfterDateTime <= CURRENT_TIMESTAMP)
 			ORDER BY id ASC
 			",
 			datasource=getDsn());
@@ -145,16 +149,22 @@ component extends="DAO" output="false" accessors="true"
 			WHERE connectionId = :connectionId
 				AND response IS NULL
 				AND error IS NULL
+				AND (runAfterDateTime IS NULL OR runAfterDateTime <= CURRENT_TIMESTAMP)
 			ORDER BY id ASC
 			",
 			datasource=getDsn());
+
 		query.addParam(name="connectionId", value=connectionId);
 		return query.execute().getResult();
 	}
 
 	
-	function getPendingRequestCountForConnection(connectionId){
-		var query = new Coldbooks.model.cf.Query(sql="SELECT COUNT(*) as count FROM QbMessage WHERE connectionId = :connectionId AND response IS NULL AND error IS NULL", datasource=getDsn());
+	function getPendingRequestCountForConnection(connectionId, filterFutureMessages){
+		var sql = "SELECT COUNT(*) as count FROM QbMessage WHERE connectionId = :connectionId AND response IS NULL AND error IS NULL ";
+		if(structKeyExists(arguments, "filterFutureMessages") AND arguments.filterFutureMessages){
+			sql &= " AND (runAfterDateTime IS NULL OR runAfterDateTime <= CURRENT_TIMESTAMP)";
+		}
+		var query = new Coldbooks.model.cf.Query(sql=sql, datasource=getDsn());
 		query.addParam(name="connectionId", value=connectionId);
 		var result = query.execute().getResult();
 		
@@ -164,7 +174,7 @@ component extends="DAO" output="false" accessors="true"
 	function getMessageHistory(connectionId, sortColumn, sortDirection){
 	
 		var query = new Coldbooks.model.cf.Query(sql="
-			SELECT id, request, response, callbackCfc, callbackFunction, returnFormat, createdDate, modifiedDate, error
+			SELECT id, messageId, request, response, callbackCfc, callbackFunction, returnFormat, createdDate, modifiedDate, runAfterDateTime, error
 			FROM QbMessage
 			WHERE connectionId = :connectionId
 			ORDER BY #Iif(len(sortColumn), De(sortColumn), De('id'))# #sortDirection#

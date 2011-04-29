@@ -29,6 +29,55 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	property name="qbXmlMinorVersion" type="string";
 	property name="createdDate" type="any";
 	property name="modifiedDate" type="any";
+	property name="eventListeners" type="string";
+
+	function handleEvent(event, data){
+		var cfcs = getEventListenersArray();
+		var error = "";
+		
+		for(var i = 1 ; i <= ArrayLen(cfcs) ; i++){
+			var cfc = cfcs[i];
+			var threadId = "EventHandler#createUUID()#";
+
+			// spawn a thread to prevent hosing the web service call (not sure why that happens)
+			thread
+				action="run"
+				name="#threadId#"
+				appname="AsyncEventHandler"
+				cfc="#cfc#"
+				data="#data#"
+				event="#event#"
+			{
+				var CFCProxy = CreateObject("Java", "coldfusion.cfc.CFCProxy").init(cfc);
+				var func = CFCProxy.getMethod(event);
+
+				if(IsDefined("func")){
+					CFCProxy.invoke(event, [data], getPageContext().getRequest(), getPageContext().getResponse());
+				}
+
+				thread.data = data;
+			}
+
+			// join the thread....
+			thread
+				action="join"
+				name="#threadId#";
+
+			// put any modified values back into the data structure
+			StructAppend(data, cfthread[threadId].data, true);
+
+			// save any errors
+			if(structKeyExists(cfthread[threadId], "error")){
+				error &= cfthread[threadId].error.ToString() & chr(13) & chr(10);
+			}
+		}
+
+		return error;
+	}
+
+	function getEventListenersArray(){
+		return ListToArray(geteventListeners(), chr(13)&chr(10));
+	}
 
 	function getSdkVersion(){
 		var sdkVersion = getQbXmlMajorVersion() & getQbXmlMinorVersion();
@@ -58,7 +107,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		throw("should never have gotten here!!");
 	}
 	
-	function sendXmlRequest(xml, callbackCFC, callbackFunction, returnFormat){
+	function sendXmlRequest(xml, callbackCFC, callbackFunction, returnFormat, delay){
 		// this needs to create and record a message
 		var message = getColdBooksMessageFactory().newMessage(getId());
 		
@@ -74,14 +123,19 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		message.setCallbackCFC(callbackCFC);
 		message.setCallbackFunction(callbackFunction);
 		message.setReturnFormat(returnFormat);
-		
+
+		// do we have any delay information?
+		if(StructKeyExists(arguments, "delay")){
+			message.setRunAfterDateTime(processDelay(delay));
+		}
+				
 		// save the message
 		getColdBooksMessageDao().saveMessage(message);
 		
 		return message.getMessageId();
 	}
 	
-	function sendRequest(object, callbackCFC, callbackFunction, returnFormat){
+	function sendRequest(object, callbackCFC, callbackFunction, returnFormat, delay){
 		// this needs to create and record a message
 		var message = getColdBooksMessageFactory().newMessage(getId());
 		
@@ -90,7 +144,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		// set the object's message ID
 		object.setRequestID(message.getQbMessageId());
 		
-		// add qbxml wrapper arround this object  (I hate the busy work, but it's got to be done)
+		// add qbxml wrapper around this object  (I hate the busy work, but it's got to be done)
 		var QBXML = getQbObjectFactory().createQBXML();
 		var QBXMLMsgsRq = getQbObjectFactory().createQBXMLMsgsRq();
 		QBXMLMsgsRq.setOnError("continueOnError");
@@ -113,11 +167,27 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		message.setCallbackCFC(callbackCFC);
 		message.setCallbackFunction(callbackFunction);
 		message.setReturnFormat(returnFormat);
-		
+
+		// do we have any delay information?
+		if(StructKeyExists(arguments, "delay")){
+			message.setRunAfterDateTime(processDelay(delay));
+		}
+
 		// save the message
 		getColdBooksMessageDao().saveMessage(message);
 		
 		return message.getMessageId();
+	}
+
+	private function processDelay(delay){
+		// do we have any delay information?
+		if(IsDate(arguments.delay)){
+			return arguments.delay;
+		} else if(IsNumeric(arguments.delay)){
+			return CreateODBCDateTime(now() + arguments.delay);
+		} else {
+			throw("The value '#arguments.delay#' passed into delay argument is not a datetime or a timespan.");
+		}
 	}
 	
 	function getRequestStatus(messageId){
@@ -217,7 +287,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	}
 	
 	function hasPendingMessage(){
-		return getColdBooksMessageDao().connectionHasPendingRequests(getId());
+		return getColdBooksMessageDao().connectionHasPendingRequests(getId(), true);
 	}
 	
 	function getNextPendingMessageXml(){
@@ -243,7 +313,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	}
 	
 	function getPendingRequestCount(){
-		return getColdBooksMessageDao().getPendingRequestCountForConnection(getId());
+		return getColdBooksMessageDao().getPendingRequestCountForConnection(getId(), true);
 	}
 	
 	function getErroredRequestCount(){

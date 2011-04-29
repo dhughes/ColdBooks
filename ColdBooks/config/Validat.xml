@@ -18,6 +18,7 @@
 		<rule name="date" validator="validateDate" />
 		<rule name="inList" validator="validateValueInList" />
 		<rule name="uuid" validator="ColdBooksValidateUUID" />
+		<rule name="isValidCfcList" validator="ColdBooksIsValidCfcList" />
 	</validationRules>
 	
 	<!-- data set definitions -->
@@ -61,15 +62,21 @@
 
 			<dataElement name="logRetention" required="true" message="Please select a log retention setting." />
 
-			<dataElement name="logTruncation" required="true" message="Please select a log retention setting.">
+			<dataElement name="logTruncation" required="true" message="Please select a log truncation setting.">
 				<assert rule="numeric">
-					<message name="invalid" value="The log retention value is not numeric." />
+					<message name="invalid" value="The log truncation value is not numeric." />
 				</assert>
 			</dataElement>
 
 			<dataElement name="connectionId" required="true" message="Please provide a valid UUID value.">
 				<assert rule="uuid">
 					<message name="invalid" value="Please provide a valid UUID value." />
+				</assert>
+			</dataElement>
+
+			<dataElement name="eventListeners" required="false">
+				<assert rule="isValidCfcList">
+					<message name="invalid" value="Every row in the event listeners field must be a fully qualified path to a valid CFC.  If you're getting unexpected errors you should check that the CFC exists at the path specified and that it has valid syntax and can be instantiated outside of ColdBooks." />
 				</assert>
 			</dataElement>
 

@@ -18,7 +18,9 @@
 	<bean id="ColdBooksBeanTransformer" class="ColdBooks.model.validat.BeanTransformer" />
 	
 	<bean id="ColdBooksValidateUUID" class="ColdBooks.model.validat.validateUUID" />
-	
+
+	<bean id="ColdBooksIsValidCfcList" class="ColdBooks.model.validat.isValidCfcList" />
+
 	<!--// ************************************************** //-->
 	<!--// Mark Mandel's excellent Java Loader (with one minor extension) //-->
 	<bean id="ColdBooksJavaLoader" class="ColdBooks.model.javaloader.ExpandingJavaLoader">

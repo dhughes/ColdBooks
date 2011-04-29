@@ -31,6 +31,7 @@
 <cfform>
 <cfgrid name="reportsGrid" format="html" pageSize="10" stripeRows="true" bind="cfc:CFIDE.administrator.ColdBooks.remote.remoteConnectionService.getConnectionLog(#Id#, {cfgridpage},{cfgridpagesize},{cfgridsortcolumn},{cfgridsortdirection})" selectonload="false">
 	<cfgridcolumn name="id" display="false">
+	<cfgridcolumn name="messageId" header="Message ID" display="false">
 	<cfgridcolumn name="createdDate" header="Created">
 	<cfgridcolumn name="modifiedDate" header="Modified">
 	<cfgridcolumn name="callbackCfc" header="Callback CFC">
@@ -39,6 +40,7 @@
 	<cfgridcolumn name="request" header="Request XML">
 	<cfgridcolumn name="response" header="Response XML">
 	<cfgridcolumn name="error" header="Error Text">
+	<cfgridcolumn name="runAfterDateTime" header="Run After">
 </cfgrid>
 
 <!--- url:index.cfm?event=viewLogDetail&id={reportsGrid.id} --->

@@ -14,6 +14,7 @@ component extends="Entity" output="false" accessors="true" persistent="true" dis
 	property name="error" type="string";
 	property name="createdDate" type="any";
 	property name="modifiedDate" type="any";
+	property name="runAfterDateTime" type="any";
 	
 	public function getQbMessageId(){
 		return "{" & left(getmessageId(), 23) & "-" & right(getmessageId(), 12) & "}";
