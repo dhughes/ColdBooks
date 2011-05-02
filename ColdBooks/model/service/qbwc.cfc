@@ -24,6 +24,7 @@
 	<cffunction name="clientVersion" access="public" returntype="Any">
 		<cfargument name="strVersion" type="string" />
 
+		<Cfdump var="#getTickCount()#" output="console" label="********************" />
 		<!---<cfset raiseEvent("onBeforeClientVersion", arguments) />--->
 
 		<cfset var result = "" />
@@ -127,7 +128,7 @@
 		<cfset Connection.setQbXMLMinorVersion(qbXMLMinorVers) />
 		<cfset Connection.setLastConnectionDateTime(now()) />
 		<cfset ColdBooksConnectionDao.saveConnection(Connection) />
-		
+
 		<!--- on the first request, QuickBooks volunteers some information --->
 		<!--- because this code is essentially asynchronous, I can't find a use for this and I've commented it out
 		<cfif Len(strHCPResponse)>
