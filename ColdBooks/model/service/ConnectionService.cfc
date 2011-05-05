@@ -26,14 +26,20 @@ component accessors="true"{
 	
 	function saveConnection( data ){
 		var result = 0;
-		
-		if(structkeyExists(data, "id") && Val(data.id)){
-			var connection = loadConnection(data.id);
+
+		if(!IsObject(data)){
+			// we got a struct of data
+			if(structkeyExists(data, "id") && Val(data.id)){
+				var connection = loadConnection(data.id);
+			} else {
+				var connection = ColdBooksConnectionFactory.newConnection();
+			}
+
+			connection.populate(data);
 		} else {
-			var connection = ColdBooksConnectionFactory.newConnection();
+			// we got an actual connection object
+			var connection = data;
 		}
-	
-		connection.populate(data);
 		
 		result = Validat.validate("Connection", connection).getErrors();
 		

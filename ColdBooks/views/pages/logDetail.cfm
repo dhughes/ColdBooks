@@ -15,6 +15,9 @@
 	<h3>Callback Function & Type</h3>
 	<p>#message.getCallbackFunction()#(#message.getReturnFormat()#)</p>
 
+	<h3>Run After</h3>
+	<p>#LsDateFormat(message.getRunAfterDateTime())# #LsTimeFormat(message.getRunAfterDateTime())#</p>
+
 	<h3>Request XML</h3>
 	<div id="RequestXml">#htmlEditFormat(message.getrequest())#</div>
 	
