@@ -75,14 +75,14 @@
 				<!--- nothing to do --->		
 				<cfset result[2] = "none" />
 			</cfif>
-			<cfset result[3] = Connection.getScheduledSeconds() />
+			<cfset result[3] = "" /><!--- providing a value in this field prevents the QBWC from ever receiving requests --->
 			<cfset result[4] = Connection.getScheduledSeconds() />
 		<cfelse>
 			<!--- we're bad --->
 			
 			<cfset result[1] = "" />
 			<!--- nvu means this is a non valid user --->
-			<cfset result[2] = "nvu" />
+			<cfset result[2] = "NVU" />
 			<cfset result[3] = "" />
 			<cfset result[4] = "" /> 
 		</cfif>
@@ -153,14 +153,17 @@
 		<cfargument name="ticket" type="String" />
 		<cfargument name="hresult" type="String" />
 		<cfargument name="message" type="String" />
-		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
+		<cftry>
+			<cfset var Connection = getColdBooksSession().getConnection(ticket) />
+			<cfset Connection.truncateLog() />
+			<cfset raiseEvent(Connection, "onConnectionError", arguments ) />
+			<cfcatch>
+				<!--- do nothing --->
+			</cfcatch>
+		</cftry>
 
-		<cfset raiseEvent(Connection, "onConnectionError", arguments ) />
-		
 		<cflog text="#arguments.toString()#" />
-		
-		<cfset Connection.truncateLog() />
-		
+
 		<cfreturn "done" />
 	</cffunction>
 	
