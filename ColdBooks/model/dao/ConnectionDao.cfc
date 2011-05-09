@@ -30,7 +30,9 @@ component extends="DAO" output="false" accessors="true"
 		connection = query.execute().getResult();
 		
 		var entity = getColdBooksConnectionFactory().newConnection();
-		entity.populateFromQuery(connection, 1);
+		if(connection.recordcount){
+			entity.populateFromQuery(connection, 1);
+		}
 		
 		return entity;
 	}
