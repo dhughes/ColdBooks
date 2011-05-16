@@ -31,7 +31,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	property name="modifiedDate" type="any";
 	property name="eventListeners" type="string";
 
-	function handleEvent(event, data){
+	function handleEvent(event, data, coldBooksSession){
 		var cfcs = getEventListenersArray();
 		var error = "";
 		
@@ -46,16 +46,19 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 				appname="AsyncEventHandler"
 				cfc="#cfc#"
 				data="#data#"
+				connection="#this#"
 				event="#event#"
+				coldBooksSession="#coldBooksSession#"
 			{
 				var CFCProxy = CreateObject("Java", "coldfusion.cfc.CFCProxy").init(cfc);
 				var func = CFCProxy.getMethod(event);
 
 				if(IsDefined("func")){
-					CFCProxy.invoke(event, [data], getPageContext().getRequest(), getPageContext().getResponse());
+					CFCProxy.invoke(event, [data, connection, coldBooksSession], getPageContext().getRequest(), getPageContext().getResponse());
 				}
 
 				thread.data = data;
+				thread.coldBooksSession = coldBooksSession;
 			}
 
 			// join the thread....
@@ -63,16 +66,20 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 				action="join"
 				name="#threadId#";
 
-			// put any modified values back into the data structure
-			StructAppend(data, cfthread[threadId].data, true);
-
 			// save any errors
 			if(structKeyExists(cfthread[threadId], "error")){
-				error &= cfthread[threadId].error.ToString() & chr(13) & chr(10);
+				writedump(cfthread[threadId].error, "console");
+				return cfthread[threadId].error;
 			}
+
+			// put any modified values back into the data structure
+			StructAppend(data, cfthread[threadId].data, true);
+			StructAppend(coldBooksSession, cfthread[threadId].coldBooksSession, true);
+
 		}
 
-		return error;
+		return "";
+
 	}
 
 	function getEventListenersArray(){
@@ -256,9 +263,10 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 			method="#method#"
 			response="#response#"
 			requestId="#requestId#"
+			connection="#this#"
 		{
 			var CFCProxy = CreateObject("Java", "coldfusion.cfc.CFCProxy").init(cfc);
-			CFCProxy.invoke(method, [response, requestId], getPageContext().getRequest(), getPageContext().getResponse());
+			CFCProxy.invoke(method, [response, requestId, connection], getPageContext().getRequest(), getPageContext().getResponse());
 		}
 		
 		// join the thread....

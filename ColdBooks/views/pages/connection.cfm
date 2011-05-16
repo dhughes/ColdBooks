@@ -6,7 +6,7 @@
 
 <cfimport taglib="../../customtags" prefix="v" />
 
-<script language="JavaScript" type="application/javascript" src="scripts/jquery-1.3.2.min.js"></script>
+<script language="JavaScript" type="application/javascript" src="scripts/jquery-1.5.2.min.js"></script>
 <script language="JavaScript" type="application/javascript" src="scripts/connection.js"></script>
 
 <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />

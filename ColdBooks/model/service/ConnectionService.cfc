@@ -46,7 +46,7 @@ component accessors="true"{
 		if(result._errorCount IS 0){
 			ColdBooksConnectionDAO.saveConnection(connection);
 			// this runs an initial query so we can get the basic version info
-			connection.sendXmlRequest("<CompanyQueryRq />", expandPath("/ColdBooks/model/handler/CompanyRequestHandler.cfc"), "handleCompanyRequest", "xml");
+			connection.sendXmlRequest("<CompanyQueryRq />", expandPath("/ColdBooks/model/handler/CompanyRequestHandler.cfc"), "handleCompanyResponse", "xml");
 		}
 		
 		return result;
@@ -65,6 +65,7 @@ component accessors="true"{
 		var log = loadConnection(id).getLog(sortColumn, sortDirection);
 		return queryconvertforgrid(log, page, pageSize);
 	}
+
 	
 	function truncateLog(id){
 		// truncate the log 

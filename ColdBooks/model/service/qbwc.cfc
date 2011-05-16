@@ -11,8 +11,12 @@
 		<cfargument name="Connection" />
 		<cfargument name="event" />
 		<cfargument name="data" />
-        <!--- get the connection the user is connecting to and have it handle the event --->
-        <cfset arguments.Connection.handleEvent(event=event, data=data) />
+
+		<cfset local.result = arguments.Connection.handleEvent(event=event, data=data, ColdBooksSession=getColdBooksSession().getAllValues(Connection.getConnectionId())) />
+		<cfif !IsSimpleValue(local.result)>
+			<cfset setError(Connection.getConnectionId(), local.result) />
+		</cfif>
+
 	</cffunction>
 
 	<cffunction name="serverVersion" access="public" returntype="Any">
@@ -24,7 +28,6 @@
 	<cffunction name="clientVersion" access="public" returntype="Any">
 		<cfargument name="strVersion" type="string" />
 
-		<Cfdump var="#getTickCount()#" output="console" label="********************" />
 		<!---<cfset raiseEvent("onBeforeClientVersion", arguments) />--->
 
 		<cfset var result = "" />
@@ -50,6 +53,9 @@
         <!--- get the connection the user is connecting to --->
         <cfset var Connection = getColdBooksConnectionService().getConnectionByConnectionId(username) />
 
+		<!--- start a new CB session ---->
+		<cfset getColdBooksSession().newSession(username, Connection) />
+
 		<cfset raiseEvent(Connection, "onBeforeAuthenticate", arguments ) />
 
 		<cfset var result = ArrayNew(1) />
@@ -63,7 +69,7 @@
 			<cfset getColdBooksConnectionDao().saveConnection(Connection) />
 						
 			<!--- create a new connection session --->
-			<cfset result[1] = getColdBooksSession().newSession(username, Connection) />
+			<cfset result[1] = username />
 			<!--- is there work to do? --->
 			<cfif connection.hasPendingMessage() AND NOT isNull(Connection.getCompanyFile())>
 				<!--- use the specified file --->
@@ -86,11 +92,12 @@
 			<cfset result[3] = "" />
 			<cfset result[4] = "" /> 
 		</cfif>
-
-		<cfset raiseEvent(Connection, "onAfterAuthenticate", mergeStructs(arguments, {result=result}) ) />
-
+		
+		<cfset arguments = mergeStructs(arguments, {result=result}) />
+		<cfset raiseEvent(Connection, "onAfterAuthenticate", arguments ) />
+		
 		<!--- return the array as a Java array --->
-		<cfreturn convertToJavaArray(result) />
+		<cfreturn convertToJavaArray(arguments.result) />
 	</cffunction>
 
 	<cffunction name="closeConnection" access="public" returntype="Any">
@@ -103,11 +110,12 @@
 		
 		<!---<cflog text="Session Ran for: #getColdBooksSession().getDuration(ticket)# ms" />--->
 		
-		<cfset getColdBooksSession().deleteSession(ticket) />
-		
-		<cfset raiseEvent(Connection, "onCloseConnection", mergeStructs(arguments, {result=result}) ) />
+		<cfset arguments = mergeStructs(arguments, {result=result}) />
+		<cfset raiseEvent(Connection, "onCloseConnection", arguments ) />
 
-		<cfreturn result />
+		<cfset getColdBooksSession().deleteSession(ticket) />
+
+		<cfreturn arguments.result />
 	</cffunction>
 	
 	<cffunction name="sendRequestXML" access="public" returntype="String">
@@ -144,9 +152,10 @@
 
 		<cfset var wrappedXml = Connection.wrapXmlRequests(xml) />
 
-		<cfset raiseEvent(Connection, "onSendRequest", mergeStructs(arguments, {xml=xml, wrappedXml=wrappedXml}) ) />
+		<cfset arguments = mergeStructs(arguments, {xml=xml, wrappedXml=wrappedXml}) />
+		<cfset raiseEvent(Connection, "onSendRequest", arguments ) />
 		
-		<cfreturn wrappedXml />
+		<cfreturn arguments.wrappedXml />
 	</cffunction>
 	
 	<cffunction name="connectionError" access="public" returntype="Any">
@@ -173,11 +182,11 @@
 		<cfargument name="hresult" type="String" />
 		<cfargument name="message" type="String" />
 
-        <cfset var ColdBooksSession = getColdBooksSession() />
+        <cfset arguments.ColdBooksSession = getColdBooksSession() />
 		<cfset var Connection = ColdBooksSession.getConnection(wcTicket) />
-		<cfset var totalRequests = ColdBooksSession.getTotalRequests(wcTicket) />
+		<cfset arguments.totalRequests = ColdBooksSession.getTotalRequests(wcTicket) />
 
-		<cfset raiseEvent(Connection, "onBeforeReceiveResponseXML", mergeStructs(arguments, {ColdBooksSession=ColdBooksSession, totalRequests=totalRequests})) />
+		<cfset raiseEvent(Connection, "onBeforeReceiveResponseXML", arguments) />
 
 		<!--- is the response an error message? --->
 		<cfif NOT Len(response)>
@@ -216,17 +225,18 @@
 
 		<cfset var percentDone = 100 - round((pendingRequests/totalRequests)*100) />
 
-		<cfset raiseEvent(Connection, "onAfterReceiveResponseXML", mergeStructs(arguments, {pendingRequests=pendingRequests, ColdBooksSession=ColdBooksSession, totalRequests=totalRequests, percentDone=percentDone}) ) />
+		<cfset arguments = mergeStructs(arguments, {pendingRequests=pendingRequests, percentDone=percentDone}) />
+		<cfset raiseEvent(Connection, "onAfterReceiveResponseXML", arguments ) />
 
-		<cfreturn JavaCast("int", percentDone) />
+		<cfreturn JavaCast("int", arguments.percentDone) />
 	</cffunction>
 	
 	<cffunction name="getLastError" access="public" returntype="Any">
 		<cfargument name="ticket" type="String" />
-		<cfset var error = getColdBooksSession().getError(ticket) />
+		<cfset arguments.error = getColdBooksSession().getError(ticket) />
 		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
 
-		<cfset raiseEvent(Connection, "onGetLastError", mergeStructs(arguments, {error=error}) ) />
+		<cfset raiseEvent(Connection, "onGetLastError", arguments ) />
 
 		<cfreturn "#error.message# | #error.detail# | #error.tagcontext[1].template# (#error.tagcontext[1].line#)" />
 	</cffunction>
@@ -247,8 +257,8 @@
 	
 	<cffunction name="setError" access="public" hint="In the case that something in this component throws an error, something out (advice) can catch it and set it back in here to associate with the session. This will allow it to be reported back to the QBWC">
 		<cfargument name="connectionId" type="String" />
-		<cfargument name="error" type="String" />
-		<cfset var Connection = getColdBooksConnectionService().getConnectionByConnectionId(username) />
+		<cfargument name="error" type="any" />
+		<cfset var Connection = getColdBooksConnectionService().getConnectionByConnectionId(connectionId) />
 
 		<cfset raiseEvent(Connection, "onError", arguments) />
 

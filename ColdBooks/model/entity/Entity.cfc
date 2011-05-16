@@ -23,7 +23,7 @@ component displayname="Entity" hint="I model an abstract Entity." output="false"
 		{
 			var key = columns[x];
 			
-			// key != "id" && -- commented this out so popualating Connections would set the ID as well.
+			// key != "id" && -- commented this out so populating Connections would set the ID as well.
 			if(IsSimpleValue( data[key][row] ) && StructKeyExists( this, "set#key#" ) && (key != "id" || (key == "id" && val(data[key][row]))) )
 			{
 				Evaluate( "set#key#( data[key][row] )" );

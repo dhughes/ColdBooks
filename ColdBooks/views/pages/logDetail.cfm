@@ -16,7 +16,11 @@
 	<p>#message.getCallbackFunction()#(#message.getReturnFormat()#)</p>
 
 	<h3>Run After</h3>
-	<p>#LsDateFormat(message.getRunAfterDateTime())# #LsTimeFormat(message.getRunAfterDateTime())#</p>
+	<cfif IsDate(message.getRunAfterDateTime())>
+		<p>#LsDateFormat(message.getRunAfterDateTime())# #LsTimeFormat(message.getRunAfterDateTime())#</p>
+	<cfelse>
+		<p><em>N/A</em></p>
+	</cfif>
 
 	<h3>Request XML</h3>
 	<div id="RequestXml">#htmlEditFormat(message.getrequest())#</div>
