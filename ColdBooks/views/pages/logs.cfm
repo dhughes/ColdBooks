@@ -4,23 +4,11 @@
 
 <link href="css/xml.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="scripts/xmldisplay.js"></script>
-<script language="JavaScript" type="application/javascript" src="scripts/jquery-1.3.2.min.js"></script>
+<script language="JavaScript" type="application/javascript" src="scripts/jquery-1.5.2.min.js"></script>
+<script language="JavaScript" type="application/javascript" src="scripts/logs.js"></script>
 
 <script type="text/javascript">
-	showLogDetail = function(id){
-		if(id){
-			ColdFusion.navigate("index.cfm?event=viewLogDetail&id=" + id, "logDetail", formatXml);
-		}
-		return "";
-	} 
-	
-	formatXml = function(){
-		var xml = $("#RequestXml");
-		LoadXMLString(xml.get(0), xml.text());
-		
-		var xml = $("#ResponseXml");
-		LoadXMLString(xml.get(0), xml.text());
-	}
+
 	
 </script>
 
@@ -29,7 +17,7 @@
 <!---<cfdump var="#Id#" />
 <cfdump var="#Connection#" />--->
 <cfform>
-<cfgrid name="reportsGrid" format="html" pageSize="10" stripeRows="true" bind="cfc:CFIDE.administrator.ColdBooks.remote.remoteConnectionService.getConnectionLog(#Id#, {cfgridpage},{cfgridpagesize},{cfgridsortcolumn},{cfgridsortdirection})" selectonload="false">
+<cfgrid name="reportsGrid" format="html" pageSize="10" stripeRows="true" bind="cfc:CFIDE.administrator.ColdBooks.remote.remoteConnectionService.getConnectionLog(#Id#, {cfgridpage},{cfgridpagesize},{cfgridsortcolumn},{cfgridsortdirection})" selectonload="false" multirowselect="true" onLoad="gridLoaded">
 	<cfgridcolumn name="id" display="false">
 	<cfgridcolumn name="messageId" header="Message ID" display="false">
 	<cfgridcolumn name="createdDate" header="Created">
@@ -41,10 +29,11 @@
 	<cfgridcolumn name="response" header="Response XML">
 	<cfgridcolumn name="error" header="Error Text">
 	<cfgridcolumn name="runAfterDateTime" header="Run After">
+	<cfgridcolumn name="delete" header="" width="20">
 </cfgrid>
 
 <!--- url:index.cfm?event=viewLogDetail&id={reportsGrid.id} --->
-<cfdiv id="logDetail" bind="javascript:showLogDetail({reportsGrid.id})" bindonload="false">
-</cfdiv>
+<div id="logDetail">
+</div>
 
 </cfform>

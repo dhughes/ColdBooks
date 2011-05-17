@@ -14,7 +14,7 @@ component extends="DAO" output="false" accessors="true"
 	
 	public function loadMessage( id )
 	{
-		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbMessage WHERE id = :id", datasource=getDsn());
+		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbMessage WHERE id = :id ", datasource=getDsn());
 		query.addParam(name="id", value=id);
 		var Message = query.execute().getResult();
 		
@@ -55,18 +55,18 @@ component extends="DAO" output="false" accessors="true"
 			)
 			VALUES
 			(
-				:connectionId,
-				:messageId,
-				:request,
-				:response,
-				:callbackType,
-				:callbackCFC,
-				:callbackFunction,
-				:returnFormat,
-				:error,
-				:createdDate,
-				:modifiedDate,
-				:runAfterDateTime
+				:connectionId ,
+				:messageId ,
+				:request ,
+				:response ,
+				:callbackType ,
+				:callbackCFC ,
+				:callbackFunction ,
+				:returnFormat ,
+				:error ,
+				:createdDate ,
+				:modifiedDate ,
+				:runAfterDateTime 
 			)
 		", datasource=getDsn());
 		
@@ -83,18 +83,18 @@ component extends="DAO" output="false" accessors="true"
 		var query = new Coldbooks.model.cf.Query(sql="
 			UPDATE QbMessage
 			SET
-				connectionId = :connectionId,
-				messageId = :messageId,
-				request = :request,
-				response = :response,
-				callbackType = :callbackType,
-				callbackCFC = :callbackCFC,
-				callbackFunction = :callbackFunction,
-				returnFormat = :returnFormat,
-				error = :error,
-				createdDate = :createdDate,
-				modifiedDate = :modifiedDate,
-				runAfterDateTime = :runAfterDateTime
+				connectionId = :connectionId ,
+				messageId = :messageId ,
+				request = :request ,
+				response = :response ,
+				callbackType = :callbackType ,
+				callbackCFC = :callbackCFC ,
+				callbackFunction = :callbackFunction ,
+				returnFormat = :returnFormat ,
+				error = :error ,
+				createdDate = :createdDate ,
+				modifiedDate = :modifiedDate ,
+				runAfterDateTime = :runAfterDateTime 
 			WHERE id = :id
 		", datasource=getDsn());
 		
@@ -109,12 +109,24 @@ component extends="DAO" output="false" accessors="true"
 	
 		var query = new Coldbooks.model.cf.Query(sql="
 			DELETE FROM QbMessage
-			WHERE id = :id
+			WHERE id = :id 
 		", datasource=getDsn());
 		
 		bindQueryToObjet(query, Message);
 		
 		result = query.execute();
+	}
+
+	function deleteMessagesByIds( ids )
+	{
+		var query = new Coldbooks.model.cf.Query(sql="
+			DELETE FROM QbMessage
+			WHERE id in ( :ids )
+		", datasource=getDsn());
+
+		query.addParam(name="ids", value=ids, list="true");
+
+		query.execute();
 	}
 	
 	function connectionHasPendingRequests(connectionId){
@@ -126,7 +138,7 @@ component extends="DAO" output="false" accessors="true"
 		var query = new Coldbooks.model.cf.Query(sql="
 			SELECT *
 			FROM  QbMessage
-			WHERE connectionId = :connectionId
+			WHERE connectionId = :connectionId 
 				AND response IS NULL
 				AND error IS NULL
 				AND (runAfterDateTime IS NULL OR runAfterDateTime <= CURRENT_TIMESTAMP)
@@ -146,7 +158,7 @@ component extends="DAO" output="false" accessors="true"
 		var query = new Coldbooks.model.cf.Query(sql="
 			SELECT *
 			FROM  QbMessage
-			WHERE connectionId = :connectionId
+			WHERE connectionId = :connectionId 
 				AND response IS NULL
 				AND error IS NULL
 				AND (runAfterDateTime IS NULL OR runAfterDateTime <= CURRENT_TIMESTAMP)
@@ -176,7 +188,7 @@ component extends="DAO" output="false" accessors="true"
 		var query = new Coldbooks.model.cf.Query(sql="
 			SELECT id, messageId, request, response, callbackCfc, callbackFunction, returnFormat, createdDate, modifiedDate, runAfterDateTime, error
 			FROM QbMessage
-			WHERE connectionId = :connectionId
+			WHERE connectionId = :connectionId 
 			ORDER BY #Iif(len(sortColumn), De(sortColumn), De('id'))# #sortDirection#
 		", datasource=getDsn());
 		query.addParam(name="connectionId", value=connectionId);

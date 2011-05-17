@@ -1,7 +1,8 @@
 component accessors="true"{
 
 	property name="Validat" type="any";
-	property name="ColdBooksConnectionDAO" type="any";	
+	property name="ColdBooksConnectionDAO" type="any";
+	property name="ColdBooksMessageDAO" type="any";
 	property name="ColdBooksConnectionFactory" type="any";	
 
 	function newConnection(){
@@ -66,6 +67,10 @@ component accessors="true"{
 		return queryconvertforgrid(log, page, pageSize);
 	}
 
+	function deleteMessages(ids){
+		ids = ListChangeDelims(ids, ",");
+		ColdBooksMessageDAO.deleteMessagesByIds(ids);
+	}
 	
 	function truncateLog(id){
 		// truncate the log 

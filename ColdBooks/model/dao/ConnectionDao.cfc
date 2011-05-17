@@ -14,7 +14,7 @@ component extends="DAO" output="false" accessors="true"
 	
 	public function loadConnection( id )
 	{
-		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbConnection WHERE id = :id", datasource=getDsn());
+		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbConnection WHERE id = :id ", datasource=getDsn());
 		query.addParam(name="id", value=id);
 		connection = query.execute().getResult();
 		
@@ -25,7 +25,7 @@ component extends="DAO" output="false" accessors="true"
 	}
 	
 	public function loadConnectionByConnectionId( connectionId ){
-		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbConnection WHERE connectionId = :connectionId", datasource=getDsn());
+		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbConnection WHERE connectionId = :connectionId ", datasource=getDsn());
 		query.addParam(name="connectionId", value=connectionId);
 		connection = query.execute().getResult();
 		
@@ -38,7 +38,7 @@ component extends="DAO" output="false" accessors="true"
 	}
 	
 	public function loadConnectionByName( name ){
-		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbConnection WHERE name = :name", datasource=getDsn());
+		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbConnection WHERE name = :name ", datasource=getDsn());
 		query.addParam(name="name", value=name);
 		connection = query.execute().getResult();
 
@@ -112,7 +112,7 @@ component extends="DAO" output="false" accessors="true"
 				:qbXmlMinorVersion ,
 				:createdDate ,
 				:modifiedDate ,
-				:eventListeners
+				:eventListeners 
 			)
 		", datasource=getDsn());
 		
@@ -129,27 +129,27 @@ component extends="DAO" output="false" accessors="true"
 		var query = new Coldbooks.model.cf.Query(sql="
 			UPDATE QbConnection
 			SET
-				name = :name,
-				description = :description,
-				passwordHash = :passwordHash,
-				supportUrl = :supportUrl,
-				webserviceUrl = :webserviceUrl,
-				fileId = :fileId,
-				isReadOnly = :isReadOnly,
-				connectionId = :connectionId,
-				personalDataPref = :personalDataPref,
-				schedulerInterval = :schedulerInterval,
-				schedulerUnit = :schedulerUnit,
-				logRetention = :logRetention,
-				logTruncation = :logTruncation,
-				lastConnectionDateTime = :lastConnectionDateTime,
-				companyFile = :companyFile,
-				country = :country,
-				qbXmlMajorVersion = :qbXmlMajorVersion, 
-				qbXmlMinorVersion = :qbXmlMinorVersion,
-				createdDate = :createdDate,
-				modifiedDate = :modifiedDate,
-				eventListeners = :eventListeners
+				name = :name ,
+				description = :description ,
+				passwordHash = :passwordHash ,
+				supportUrl = :supportUrl ,
+				webserviceUrl = :webserviceUrl ,
+				fileId = :fileId ,
+				isReadOnly = :isReadOnly ,
+				connectionId = :connectionId ,
+				personalDataPref = :personalDataPref ,
+				schedulerInterval = :schedulerInterval ,
+				schedulerUnit = :schedulerUnit ,
+				logRetention = :logRetention ,
+				logTruncation = :logTruncation ,
+				lastConnectionDateTime = :lastConnectionDateTime ,
+				companyFile = :companyFile ,
+				country = :country ,
+				qbXmlMajorVersion = :qbXmlMajorVersion ,
+				qbXmlMinorVersion = :qbXmlMinorVersion ,
+				createdDate = :createdDate ,
+				modifiedDate = :modifiedDate ,
+				eventListeners = :eventListeners 
 			WHERE id = :id
 		", datasource=getDsn());
 		
@@ -165,7 +165,7 @@ component extends="DAO" output="false" accessors="true"
 		// delete messages for this connection
 		var query = new Coldbooks.model.cf.Query(sql="
 			DELETE FROM QbMessage
-			WHERE connectionId = :id
+			WHERE connectionId = :id 
 		", datasource=getDsn());
 
 		bindQueryToObjet(query, Connection);
