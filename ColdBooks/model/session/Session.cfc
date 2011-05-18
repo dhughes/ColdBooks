@@ -2,89 +2,96 @@ component accessors="true"{
 
 	property name="timeout" type="any";
 
-	this.sessions = {};
-	
-	function newSession(connectionId, Connection){
-		this.sessions[connectionId] = StructNew();
-		this.sessions[connectionId].lastConnected = now();
-		this.sessions[connectionId].startTick = getTickCount();
-		this.sessions[connectionId].Connection = Connection;
-		this.sessions[connectionId].OverrideBatch = false;
-		this.sessions[connectionId].error = "No error recorded.  You should check the ColdFusion logs for server errors.";
-		this.sessions[connectionId].totalRequests = Connection.getPendingRequestCount();
+	// insure we have a set of sessions in the application scope:
+	if(!structKeyExists(application, "ColdBooksSessions")){
+		application.ColdBooksSessions = {};
+	}
+    
+	// get a reference to the application.ColdBooksSessions struct
+	//application.ColdBooksSessions = application.ColdBooksSessions;
 
-		this.sessions[connectionId].values = {};
+
+	function newSession(connectionId, Connection){
+		application.ColdBooksSessions[connectionId] = StructNew();
+		application.ColdBooksSessions[connectionId].lastConnected = now();
+		application.ColdBooksSessions[connectionId].startTick = getTickCount();
+		application.ColdBooksSessions[connectionId].Connection = Connection;
+		application.ColdBooksSessions[connectionId].OverrideBatch = false;
+		application.ColdBooksSessions[connectionId].error = "No error recorded.  You should check the ColdFusion logs for server errors.";
+		application.ColdBooksSessions[connectionId].totalRequests = Connection.getPendingRequestCount();
+
+		application.ColdBooksSessions[connectionId].values = {};
 
 		return connectionId; 
 	}
 
 	function setValue(connectionId, name, value){
-		this.sessions[connectionId].values[name] = value;
+		application.ColdBooksSessions[connectionId].values[name] = value;
 	}
 
 	function getValue(connectionId, name){
-		return this.sessions[connectionId].values[name];
+		return application.ColdBooksSessions[connectionId].values[name];
 	}
 
 	function getAllValues(connectionId){
 		//try{
-		return this.sessions[connectionId].values;
+		return application.ColdBooksSessions[connectionId].values;
 		/*} catch(any e){
-			writedump(this.sessions, "console");
+			writedump(application.ColdBooksSessions, "console");
 			writedump(arguments.connectionId, "console");
 			rethrow;
 		}*/
 	}
 
 	function valueExists(connectionId, name){
-		return structKeyExists(this.sessions[connectionId].values, name);
+		return structKeyExists(application.ColdBooksSessions[connectionId].values, name);
 	}
 
 	function setOverrideBatch(connectionId, value){
 		maintainSession(connectionId);
-		this.sessions[connectionId].OverrideBatch = value;
+		application.ColdBooksSessions[connectionId].OverrideBatch = value;
 	}
 	
 	function getOverrideBatch(connectionId){
 		maintainSession(connectionId);
-		return this.sessions[connectionId].OverrideBatch;
+		return application.ColdBooksSessions[connectionId].OverrideBatch;
 	}
 	
 	function getDuration(connectionId){
-		return getTickcount()-this.sessions[connectionId].startTick;
+		return getTickcount()-application.ColdBooksSessions[connectionId].startTick;
 	}
 	
 	function getTotalRequests(connectionId){
 		maintainSession(connectionId);
-		this.sessions[connectionId].totalRequests = this.sessions[connectionId].Connection.getPendingRequestCount();
-		return this.sessions[connectionId].totalRequests;
+		application.ColdBooksSessions[connectionId].totalRequests = application.ColdBooksSessions[connectionId].Connection.getPendingRequestCount();
+		return application.ColdBooksSessions[connectionId].totalRequests;
 	}
 	
 	function deleteSession(connectionId){
-		if(StructKeyExists(this.sessions, connectionId)){
-			StructDelete(this.sessions, connectionId);
+		if(StructKeyExists(application.ColdBooksSessions, connectionId)){
+			StructDelete(application.ColdBooksSessions, connectionId);
 		}
 	}
 	
 	function getConnection(connectionId){
 		maintainSession(connectionId);
 		
-		return this.sessions[connectionId].Connection;
+		return application.ColdBooksSessions[connectionId].Connection;
 	}
 	
 	private function maintainSession(connectionId){
-		if(dateAdd("s", getTimeout(), this.sessions[connectionId].lastConnected) LTE now()){
+		if(dateAdd("s", getTimeout(), application.ColdBooksSessions[connectionId].lastConnected) LTE now()){
 			throw("Session Timed Out");
 		}
 	
-		this.sessions[connectionId].lastConnected = now();
+		application.ColdBooksSessions[connectionId].lastConnected = now();
 	}
 	
 	function setError(connectionId, error){
-		this.sessions[connectionId].error = error;
+		application.ColdBooksSessions[connectionId].error = error;
 	}
 	
 	function getError(connectionId){
-		return this.sessions[connectionId].error;
+		return application.ColdBooksSessions[connectionId].error;
 	}
 }

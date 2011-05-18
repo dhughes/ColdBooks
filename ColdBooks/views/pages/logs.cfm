@@ -6,11 +6,11 @@
 <script type="text/javascript" src="scripts/xmldisplay.js"></script>
 <script language="JavaScript" type="application/javascript" src="scripts/jquery-1.5.2.min.js"></script>
 <script language="JavaScript" type="application/javascript" src="scripts/logs.js"></script>
-
+<cfoutput>
 <script type="text/javascript">
-
-	
+	var connectionId = #Id#;
 </script>
+</cfoutput>
 
 <h2 class="pageHeader">ColdBooks Connection Log</h2>
 

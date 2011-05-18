@@ -8,11 +8,27 @@
 	
 	<cffunction name="doLog" access="private">
 		<cfargument name="val" />
+
+		<!--- is this element an array?  is the last element in the array a structure? --->
+		<cfif IsArray(val) AND IsStruct(val[ArrayLen(val)])>
+			<cfset var collection = val[ArrayLen(val)] />
+
+			<cfloop collection="#collection#" item="key">
+				<cfif IsXml(collection[key])>
+					<!--- first off, let's make sure that this is a string version of xml --->
+					<cfset collection[key] = ToString(collection[key]) />
+					<!--- next, let's remove any linebreaks to make this easier to read in the console --->
+					<cfset collection[key] = Replace(collection[key], chr(13), "", "all") />
+					<cfset collection[key] = Replace(collection[key], chr(10), "", "all") />
+				</cfif>
+			</cfloop>
+		</cfif>
+
 		<cfif getEnabled()>
 			<cfif isSimpleValue(val)>
 				<cflog text="#val#" />
 			<cfelse>
-				<cfdump var="#val#" output="console" />
+				<cfdump var="#val#" output="console" expand="false"  />
 			</cfif>
 		</cfif>
 	</cffunction>

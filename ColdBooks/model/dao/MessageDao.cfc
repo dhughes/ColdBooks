@@ -117,14 +117,24 @@ component extends="DAO" output="false" accessors="true"
 		result = query.execute();
 	}
 
-	function deleteMessagesByIds( ids )
-	{
+	function deleteMessagesByIds( ids ){
 		var query = new Coldbooks.model.cf.Query(sql="
 			DELETE FROM QbMessage
 			WHERE id in ( :ids )
 		", datasource=getDsn());
 
 		query.addParam(name="ids", value=ids, list="true");
+
+		query.execute();
+	}
+
+	function deleteAllMessages(connectionID){
+		var query = new Coldbooks.model.cf.Query(sql="
+			DELETE FROM QbMessage
+			WHERE connectionID = :connectionID 
+		", datasource=getDsn());
+
+		query.addParam(name="connectionID", value=connectionID);
 
 		query.execute();
 	}

@@ -11,7 +11,7 @@ component accessors="true"{
 
 	function loadConnection(id){
 		return ColdBooksConnectionDAO.loadConnection( id );
-	} 
+	}
 	
 	function getConnectionByConnectionId(connectionId){
 		return ColdBooksConnectionDAO.loadConnectionByConnectionId( connectionId );
@@ -70,6 +70,10 @@ component accessors="true"{
 	function deleteMessages(ids){
 		ids = ListChangeDelims(ids, ",");
 		ColdBooksMessageDAO.deleteMessagesByIds(ids);
+	}
+
+	function deleteAllMessages(connectionId){
+		ColdBooksMessageDAO.deleteAllMessages(connectionId);
 	}
 	
 	function truncateLog(id){

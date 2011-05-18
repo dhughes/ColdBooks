@@ -38,7 +38,7 @@
 			<value>RemoteConnectionService</value>  
 		</property>  
 		<property name="remoteMethodNames">  
-			<value>getConnectionLog,deleteMessages</value>
+			<value>getConnectionLog,deleteMessages,deleteAllMessages</value>
 		</property>  
 	</bean>  
 	

@@ -12,10 +12,16 @@
 		<cfargument name="event" />
 		<cfargument name="data" />
 
+		<!--- todo: factor out into a logging class --->
+		<cflog text="Raising Event: #arguments.event#" />
+
 		<cfset local.result = arguments.Connection.handleEvent(event=event, data=data, ColdBooksSession=getColdBooksSession().getAllValues(Connection.getConnectionId())) />
 		<cfif !IsSimpleValue(local.result)>
 			<cfset setError(Connection.getConnectionId(), local.result) />
 		</cfif>
+
+		<!--- todo: factor out into a logging class --->
+		<cflog text="Completed Event: #arguments.event#" />
 
 	</cffunction>
 
@@ -63,7 +69,7 @@
 		<!--- validate this connection's password --->
 		<cfif Connection.comparePassword(password)>
 			<!--- we're good --->
-			
+
 			<!--- set the last connection time --->
 			<cfset Connection.setLastConnectionDateTime(now()) />
 			<cfset getColdBooksConnectionDao().saveConnection(Connection) />
@@ -92,10 +98,10 @@
 			<cfset result[3] = "" />
 			<cfset result[4] = "" /> 
 		</cfif>
-		
+
 		<cfset arguments = mergeStructs(arguments, {result=result}) />
 		<cfset raiseEvent(Connection, "onAfterAuthenticate", arguments ) />
-		
+
 		<!--- return the array as a Java array --->
 		<cfreturn convertToJavaArray(arguments.result) />
 	</cffunction>
@@ -143,7 +149,6 @@
 			<cfset var Objects = getColdBooksTranslator().toObjects(strHCPResponse, qbXMLCountry, qbXMLMajorVers, qbXMLMinorVers) />
 			<cfdump var="#Objects#" output="console">
 		</cfif> --->
-		
 		<cfif getrunAsBatch() AND NOT ColdBooksSession.getOverrideBatch(ticket)>
 			<cfset var xml = Connection.getNextPendingMessageSetXml() />
 		<cfelse>
@@ -199,6 +204,7 @@
 			<cfif getRunAsBatch() AND NOT ColdBooksSession.getOverrideBatch(wcTicket)>
 				<cflog text="There was an error running the batch.  We'll retry the transactions individually.: Hresult: #hresult#, Message: #message#." />
 				<cfset ColdBooksSession.setOverrideBatch(wcTicket, true) />
+
 			<cfelse>
 				<!--- the first transaction failed, we need to log an error --->
 				<cfset connection.recordError(hresult & " " & message) />
@@ -211,19 +217,25 @@
 			</cfif>
 		<cfelse>
 			<!--- no errors --->
-			<!--- handle the response (IE, make cfc callback, record the response, etc) ---> 
+			<!--- handle the response (IE, make cfc callback, record the response, etc) --->
+
+			<!--- todo: factor out into a logging class --->
+			<cflog text="Handling Response" />
+
 			<cfif getrunAsBatch()>
 				<cfset Connection.handleResponseSet(response) />
 			<cfelse>
 				<cfset Connection.handleResponse(response) />
 			</cfif>
+
+			<!--- todo: factor out into a logging class --->
+			<cflog text="Done Handling Response" />
 		</cfif>
 		
 		<cfset var pendingRequests = Connection.getPendingRequestCount() />
 		
 		<cfset Connection.truncateLog() />
-
-		<cfset var percentDone = 100 - round((pendingRequests/totalRequests)*100) />
+		<cfset var percentDone = pendingRequests GT totalRequests ? 0 : (100 - round((pendingRequests/totalRequests)*100)) />
 
 		<cfset arguments = mergeStructs(arguments, {pendingRequests=pendingRequests, percentDone=percentDone}) />
 		<cfset raiseEvent(Connection, "onAfterReceiveResponseXML", arguments ) />
@@ -238,6 +250,7 @@
 
 		<cfset raiseEvent(Connection, "onGetLastError", arguments ) />
 
+		<cfdump var="#arguments.error#" output="console" />
 		<cfreturn "#error.message# | #error.detail# | #error.tagcontext[1].template# (#error.tagcontext[1].line#)" />
 	</cffunction>
 	

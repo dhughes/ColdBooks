@@ -7,6 +7,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	property name="ColdBooksMessageFactory" type="any";
 	property name="ColdBooksMessageDao" type="any";
 	property name="ColdBooksTranslator" type="any";
+	property name="ColdBooksSession" type="any";
 	
 	property name="id" type="numeric";
 	property name="name" type="string";
@@ -68,7 +69,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 
 			// save any errors
 			if(structKeyExists(cfthread[threadId], "error")){
-				writedump(cfthread[threadId].error, "console");
+				writedump(cfthread[threadId].error & " See ColdBooks log for more details.", "console");
 				return cfthread[threadId].error;
 			}
 
@@ -250,7 +251,9 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 			response = getColdBooksTranslator().toObjects(wrapXmlResponse(response), this);
 			response = response.getQBXMLMsgsRs().getHostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs();
 		}
-		
+
+		var qbSessionData = getColdBooksSession().getAllValues(getConnectionId());
+
 		// invoke the CFC
 		// you may wonder why this is being done in a thread.... the reason is that the CFCProxy
 		// seems to be causing java.lang.IllegalStateException in the QBWS service.  wrapping 
@@ -264,9 +267,10 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 			response="#response#"
 			requestId="#requestId#"
 			connection="#this#"
+			ColdBooksSession="#qbSessionData#"
 		{
 			var CFCProxy = CreateObject("Java", "coldfusion.cfc.CFCProxy").init(cfc);
-			CFCProxy.invoke(method, [response, requestId, connection], getPageContext().getRequest(), getPageContext().getResponse());
+			CFCProxy.invoke(method, [response, requestId, connection, ColdBooksSession], getPageContext().getRequest(), getPageContext().getResponse());
 		}
 		
 		// join the thread....
@@ -274,10 +278,13 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 			action="join"
 			name="#requestId#";
 
+		// put any modified response values back into the response structure
+		//StructAppend(response, cfthread[requestId].response, true);
+
 		// save any errors
 		if(structKeyExists(cfthread[requestId], "error")){
 			var Message = getColdBooksMessageDao().getMessageByMessageIdInQBFormat(requestId);
-			Message.setError(cfthread[requestId].error.ToString());
+			Message.setError(serializeJSON(cfthread[requestId].error));
 			getColdBooksMessageDao().saveMessage(Message);
 		}
 		

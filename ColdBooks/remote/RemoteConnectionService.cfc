@@ -148,6 +148,12 @@
 <cfif isDefined('rtn')><cfreturn rtn /></cfif>
 </cffunction>
 
+<cffunction name="deleteAllMessages" access="remote" returntype="any" > 
+<cfargument name="connectionId" required="false" /> 
+<cfset var rtn = callMethod('deleteAllMessages', arguments) />
+<cfif isDefined('rtn')><cfreturn rtn /></cfif>
+</cffunction>
+
 <cffunction name="deleteMessages" access="remote" returntype="any" > 
 <cfargument name="ids" required="false" /> 
 <cfset var rtn = callMethod('deleteMessages', arguments) />

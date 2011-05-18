@@ -12,6 +12,15 @@ function gridLoaded(){
         handler:deleteMessages//Our javascript handler function that displays the alert
 	});
 
+	bbar.add('-', {
+        pressed: false,
+        enableToggle:false,
+        text: 'Delete All',
+        icon:'images/cancel.png',//Icon graphic
+        cls: 'x-btn-text-icon',//The ext class that will display the button with text/icon properly
+        handler:deleteAllMessages//Our javascript handler function that displays the alert
+	});
+
     //Reconfigure the layout of the toolbar again, this causes the button to show on the toolbar
     bbar.doLayout();
 
@@ -53,7 +62,16 @@ function deleteMessages(){
 		ColdFusion.Grid.refresh("reportsGrid");
 		clearLogDetail();
 	});
+}
 
+function deleteAllMessages(){
+	if(confirm('Are you sure you want to delete ALL messages from this connection? All unsent, sent, and errored messages will be perminently deleted!')){
+		// delete these logs
+		$.get("/CFIDE/administrator/ColdBooks/remote/remoteConnectionService.cfc?method=deleteAllMessages&connectionId=" + connectionId, function(event){
+			ColdFusion.Grid.refresh("reportsGrid");
+			clearLogDetail();
+		});
+	}
 }
 
 showLogDetail = function(id){

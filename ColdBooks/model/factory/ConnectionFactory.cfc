@@ -8,6 +8,7 @@ component output="false" accessors="true"
 	property name="ColdBooksMessageFactory" type="any";
 	property name="ColdBooksMessageDao" type="any";
 	property name="ColdBooksTranslator" type="any";
+	property name="ColdBooksSession" type="any";
 
 	public function init()
 	{
@@ -23,6 +24,7 @@ component output="false" accessors="true"
 		Connection.setColdBooksMessageFactory(getColdBooksMessageFactory());
 		Connection.setColdBooksMessageDao(getColdBooksMessageDao());
 		Connection.setColdBooksTranslator(getColdBooksTranslator());
+		Connection.setColdBooksSession(getColdBooksSession());
 		
 		return Connection;
 	}

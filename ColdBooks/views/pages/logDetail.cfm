@@ -39,6 +39,8 @@
 		#message.geterror()#
 	<cfelseif NOT Len(message.geterror())>
 		<i>[Empty String]</i>
+	<cfelseif isJSON(message.geterror())>
+		<cfdump var="#deserializeJSON(message.geterror())#" />
 	<cfelse>
 		#message.geterror()#
 	</cfif>
