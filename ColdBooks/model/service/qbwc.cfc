@@ -7,6 +7,9 @@
 	<cfproperty name="version" type="any" />
 	<cfproperty name="runAsBatch" type="boolean" />
 
+	<!--- set the timeout to 10 minutes --->
+	<cfsetting requesttimeout="600" />
+
 	<cffunction name="raiseEvent" access="private" returntype="void">
 		<cfargument name="Connection" />
 		<cfargument name="event" />
