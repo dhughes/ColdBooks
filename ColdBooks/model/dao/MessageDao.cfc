@@ -4,7 +4,8 @@
 component extends="DAO" output="false" accessors="true"
 {
 
-	property name="ColdBooksMessageFactory" type="any";	
+	property name="ColdBooksMessageFactory" type="any";
+	property name="maxMessages";
 	
 	public function init()
 	{
@@ -176,6 +177,8 @@ component extends="DAO" output="false" accessors="true"
 			",
 			datasource=getDsn());
 
+		query.setMaxRows(getMaxMessages());
+		
 		query.addParam(name="connectionId", value=connectionId);
 		return query.execute().getResult();
 	}

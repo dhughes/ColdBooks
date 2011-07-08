@@ -67,7 +67,11 @@
 	</bean>
 	
 	<bean id="ColdBooksConnectionDao" class="ColdBooks.model.dao.ConnectionDao" />
-	<bean id="ColdBooksMessageDao" class="ColdBooks.model.dao.MessageDao" />
+	<bean id="ColdBooksMessageDao" class="ColdBooks.model.dao.MessageDao">
+		<property name="maxMessages">
+			<value>25</value>
+		</property>
+	</bean>
 	
 	<bean id="ColdBooksSession" class="ColdBooks.model.session.Session">
 		<property name="timeout">
