@@ -286,6 +286,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 			var Message = getColdBooksMessageDao().getMessageByMessageIdInQBFormat(requestId);
 			Message.setError(serializeJSON(cfthread[requestId].error));
 			getColdBooksMessageDao().saveMessage(Message);
+			writedump(cfthread[requestId].error, "console");
 		}
 		
 	}

@@ -90,9 +90,21 @@ clearLogDetail = function(){
 }
 
 formatXml = function(){
-	var xml = $("#RequestXml");
-	LoadXMLString(xml.get(0), xml.text());
+	$("#logDetail input[type='radio']").click(function(){
+		var xml = $("#" + $(this).attr('name') + " div.xml");
+		var text = $("#" + $(this).attr('name') + " div.text");
+		if($(this).val() == "xml"){
+			xml.show();
+			text.hide();
+		} else {
+			xml.hide();
+			text.show();
+		}
+	});
+	$(".xml").each(function(index){
+		var xml = $(this);
 
-	var xml = $("#ResponseXml");
-	LoadXMLString(xml.get(0), xml.text());
+		LoadXMLString(xml.attr("id"), xml.text());
+	});
+	$(".text").hide();
 }

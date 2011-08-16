@@ -23,26 +23,52 @@
 	</cfif>
 
 	<h3>Request XML</h3>
-	<div id="RequestXml">#htmlEditFormat(message.getrequest())#</div>
-	
-	<h3>Response XML</h3>
+	<div id="request">
+		<form>Show as:
+			<input type="radio" name="request" value="xml" checked="checked"/> Xml
+			<input type="radio" name="request" value="text"/> Text
+		</form>
+		<div id="requestXml" class="xml">#htmlEditFormat(message.getrequest())#</div>
+		<div class="text">#htmlEditFormat(message.getrequest())#</div>
+	</div>
+
 	<cfif IsXml(message.getresponse())>
-		<div id="ResponseXml">#htmlEditFormat(message.getresponse())#</div>
+		<h3>Response XML</h3>
+		<div id="response">
+			<form>Show as:
+				<input type="radio" name="response" value="xml" checked="checked"/> Xml
+				<input type="radio" name="response" value="text"/> Text
+			</form>
+			<div id="responseXml" class="xml">#htmlEditFormat(message.getresponse())#</div>
+			<div class="text">#htmlEditFormat(message.getresponse())#</div>
+		</div>
 	<cfelseif NOT Len(message.getresponse())>
+		<h3>Response Text</h3>
 		<i>[Empty String]</i>
 	<cfelse>
-		#message.getresponse()#
+		<h3>Response Text</h3>
+		#htmlEditFormat(message.getresponse())#
 	</cfif>
 	
-	<h3>Error</h3>
 	<cfif IsXml(message.geterror())>
-		#message.geterror()#
+		<h3>Error Xml</h3>
+		<div id="error">
+			<form>Show as:
+				<input type="radio" name="error" value="xml" checked="checked"/> Xml
+				<input type="radio" name="error" value="text"/> Text
+			</form>
+			<div id="errorXml" class="xml">#htmlEditFormat(message.geterror())#</div>
+			<div class="text">#htmlEditFormat(message.geterror())#</div>
+		</div>
 	<cfelseif NOT Len(message.geterror())>
+		<h3>Error Text</h3>
 		<i>[Empty String]</i>
 	<cfelseif isJSON(message.geterror())>
+		<h3>Error Data</h3>
 		<cfdump var="#deserializeJSON(message.geterror())#" />
 	<cfelse>
-		#message.geterror()#
+		<h3>Error Text</h3>
+		#htmlEditFormat(message.geterror())#
 	</cfif>
 	
 </cfoutput>

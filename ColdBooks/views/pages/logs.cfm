@@ -4,16 +4,16 @@
 
 <link href="css/xml.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="scripts/xmldisplay.js"></script>
-<script language="JavaScript" type="application/javascript" src="scripts/jquery-1.5.2.min.js"></script>
+<script language="JavaScript" type="application/javascript" src="scripts/jquery-1.6.2.min.js"></script>
 <script language="JavaScript" type="application/javascript" src="scripts/logs.js"></script>
 <cfoutput>
 <script type="text/javascript">
 	var connectionId = #Id#;
 </script>
+
+
+<h2 class="pageHeader">ColdBooks Connection Log for #Connection.getName()#</h2>
 </cfoutput>
-
-<h2 class="pageHeader">ColdBooks Connection Log</h2>
-
 <!---<cfdump var="#Id#" />
 <cfdump var="#Connection#" />--->
 <cfform>

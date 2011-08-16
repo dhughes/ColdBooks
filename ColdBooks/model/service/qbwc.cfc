@@ -238,7 +238,12 @@
 		<cfset var pendingRequests = Connection.getPendingRequestCount() />
 		
 		<cfset Connection.truncateLog() />
-		<cfset var percentDone = pendingRequests GT totalRequests ? 0 : (100 - round((pendingRequests/totalRequests)*100)) />
+		<cfif totalRequests IS NOT 0>
+			<cfset var percentDone = pendingRequests GT totalRequests ? 0 : (100 - round((pendingRequests/totalRequests)*100)) />
+		<cfelse>
+			<cfset var percentDone = 100 />
+		</cfif>
+
 
 		<cfset arguments = mergeStructs(arguments, {pendingRequests=pendingRequests, percentDone=percentDone}) />
 		<cfset raiseEvent(Connection, "onAfterReceiveResponseXML", arguments ) />

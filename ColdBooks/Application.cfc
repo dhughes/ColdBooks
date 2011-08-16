@@ -21,7 +21,11 @@
 	<cfset this.mappings["/modelglue"] = this.mapRoot & "/modelglue" />
 	<cfset this.mappings["/validat"] = this.mapRoot & "/validat" />
 
+	<cfset this.administrator = new CFIDE.adminapi.administrator() />
+	<cfset this.datasource = new CFIDE.adminapi.datasource() />
+
 	<cffunction name="databaseExists" access="private">
+
 		<cftry>
 			<!--- this query will insure the datasource and database exist --->
 			<cfquery name="test" datasource="ColdBooksData">
@@ -32,6 +36,41 @@
 				<cfreturn false />
 			</cfcatch>
 		</cftry>
+	</cffunction>
+
+	<cffunction name="databaseIsEmbedded" access="private">
+		<cfset var ColdBooksData = this.datasource.getDatasources("ColdBooksData") />
+		<cfreturn coldbooksdata.driver IS "Apache Derby Embedded" />
+	</cffunction>
+
+	<cffunction name="migrateToStandAlone" access="private">
+		<!--- first, delete the existing DSN --->
+
+		<cfset var ColdBooksData = this.datasource.getDatasources("ColdBooksData") />
+		<cfset this.datasource.deleteDatasource("ColdBooksData") />
+
+		<!--- now initialize the Database. this will not overwrite the existing DB --->
+		<cfset initializeDatabase() />
+
+	</cffunction>
+
+	<cffunction name="startDerby" access="public">
+		<cfset var ip = [127,0,0,1] />
+		<cfset var ba = javaCast('byte[]', ip) />
+		<cfset var inetAddress = createObject('java', 'java.net.Inet4Address').getByAddress(ba) />
+		<cfset var nsc = createObject('java', 'org.apache.derby.drda.NetworkServerControl').init(inetAddress, '1527') />
+		<!--- <cfdump var="#nsc#" output="console" />--->
+
+		<cftry>
+			<!--- try to ping the server.  If that fails, start it --->
+			<cfset nsc.ping() />
+			<!--- <cflog text="Derby is running" /> --->
+			<cfcatch>
+				<cflog text="Starting Derby" />
+				<cfset nsc.start(javacast('null', '')) />
+			</cfcatch>
+		</cftry>
+
 	</cffunction>
 
 	<cffunction name="onApplicationStart" returnType="boolean" output="false">
@@ -59,12 +98,31 @@
 	<cffunction name="onRequestStart" returnType="boolean" output="false">
 		<cfargument name="thePage" type="string" required="true" />
 
-		<!--- check to see if the DB exists --->
-		<cfif NOT databaseExists()>
-			<cfset initializeDatabase() />
-			<!--- db should exist now.  Now we need to reload the app to get it to pickup our ORM settings --->
-			<cflocation url="#cgi.script_name#?init=true" addtoken="false" />
+		<!--- insure derby is running in network mode --->
+		<cfset startDerby() />
+
+		<!--- are we logged into the CF admin? --->
+		<cfif IsUserLoggedIn()>
+			<!--- check to see if the DB exists --->
+			<cfif NOT databaseExists()>
+				<cfset initializeDatabase() />
+				<!--- db should exist now.  Now we need to reload the app to get it to pickup our ORM settings --->
+				<cflocation url="#cgi.script_name#?init=true" addtoken="false" />
+
+			<!--- important info: previous versions (< 42) of ColdBooks used derby embedded.
+				I'm changing the code to use derby client. If we already have an existing DSN
+				for ColdBooksData we're going to see what DSN type it is and migrate to stand alone if need be.
+			--->
+			<!--- the DB exists. check to see if it is embedded rather than stand alone --->
+			<cfelseif databaseIsEmbedded()>
+				<!--- migrate the DB to be stand alone --->
+				<cfset migrateToStandAlone() />
+
+                <cflocation url="#cgi.script_name#?init=true" addtoken="false" />
+			</cfif>
 		</cfif>
+
+
 
 		<!---// Reload app and session if requested //--->
 		<cfif structKeyExists( url, "init" ) AND url.init EQ "true" >
@@ -135,9 +193,13 @@
 					    	recurse="yes" />
 					</cfif>
 					
-					<cfset CreateObject("component", "CFIDE.adminapi.datasource").setDerbyEmbedded(
+					<cfset CreateObject("component", "CFIDE.adminapi.datasource").setOther(
 						name="ColdBooksData",
-						database=dataDir
+						url="jdbc:derby://127.0.0.1:1527/#dataDir#",
+						class="org.apache.derby.jdbc.ClientDriver",
+						driver="org.apache.derby.jdbc.ClientDriver",
+						buffer=1048576,
+						blob_buffer=1048576
 					) />
 				</cfif>
 			</cflock>
