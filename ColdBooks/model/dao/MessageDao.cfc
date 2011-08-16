@@ -25,12 +25,42 @@ component extends="DAO" output="false" accessors="true"
 		return entity;
 	}
 
-	public function saveMessage( Message )
+	public function isDuplicateMessage(Message){
+		var request = Message.getRequest();
+		var requestID = XmlParse(request).XmlRoot.XmlAttributes["requestID"];
+		request = replace(request, requestID, "{________-____-____-____-____________}");
+
+		var query = new Coldbooks.model.cf.Query(sql="
+			SELECT *
+			FROM QbMessage
+			WHERE connectionId = :connectionId  
+				AND response IS NULL
+				AND error IS NULL
+				AND request LIKE :request 
+			ORDER BY id ASC
+			",
+			datasource=getDsn()
+		);
+
+		query.addParam(name="connectionId", value=Message.getConnectionId());
+		query.addParam(name="request", value=request);
+
+		return query.execute().getResult().recordcount GT 0;
+	}
+
+	public function saveMessage( Message, allowDuplicateMessages=true )
 	{
+		// if we are NOT allowing duplicate messages then need to try reading this exact message
+		// from the db
+		if(!allowDuplicateMessages && isDuplicateMessage(Message)){
+			writelog("Did not log duplicate message: #Message.getRequest()#");
+			return;
+		}
+
 		if(val(Message.getId())){
 			updateMessage(Message);
 		} else {
-			insertMessage(Message);		
+			insertMessage(Message);
 		}
 	}
 
@@ -165,7 +195,7 @@ component extends="DAO" output="false" accessors="true"
 		return entity;
 	}
 	
-	function getPendingMessagesForConnectionAsQuery(connectionId){
+	function getPendingMessagesForConnectionAsQuery(connectionId, limitRows=true){
 		var query = new Coldbooks.model.cf.Query(sql="
 			SELECT *
 			FROM  QbMessage
@@ -177,7 +207,9 @@ component extends="DAO" output="false" accessors="true"
 			",
 			datasource=getDsn());
 
-		query.setMaxRows(getMaxMessages());
+		if(limitRows){
+			query.setMaxRows(getMaxMessages());
+		}
 		
 		query.addParam(name="connectionId", value=connectionId);
 		return query.execute().getResult();
@@ -192,7 +224,7 @@ component extends="DAO" output="false" accessors="true"
 		var query = new Coldbooks.model.cf.Query(sql=sql, datasource=getDsn());
 		query.addParam(name="connectionId", value=connectionId);
 		var result = query.execute().getResult();
-		
+
 		return result.count;
 	}
 

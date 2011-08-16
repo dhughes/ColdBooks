@@ -69,7 +69,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 
 			// save any errors
 			if(structKeyExists(cfthread[threadId], "error")){
-				writedump(cfthread[threadId].error & " See ColdBooks log for more details.", "console");
+				writedump(cfthread[threadId].error, "console", "text", false, "Encountered Error. See ColdBooks log for more details.");
 				return cfthread[threadId].error;
 			}
 
@@ -115,7 +115,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		throw("should never have gotten here!!");
 	}
 	
-	function sendXmlRequest(xml, callbackCFC, callbackFunction, returnFormat, delay){
+	function sendXmlRequest(xml, callbackCFC, callbackFunction, returnFormat, delay, allowDuplicateMessages=true){
 		// this needs to create and record a message
 		var message = getColdBooksMessageFactory().newMessage(getId());
 		
@@ -138,12 +138,12 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		}
 				
 		// save the message
-		getColdBooksMessageDao().saveMessage(message);
+		getColdBooksMessageDao().saveMessage(message, allowDuplicateMessages);
 		
 		return message.getMessageId();
 	}
 	
-	function sendRequest(object, callbackCFC, callbackFunction, returnFormat, delay){
+	function sendRequest(object, callbackCFC, callbackFunction, returnFormat, delay, allowDuplicateMessages=true){
 		// this needs to create and record a message
 		var message = getColdBooksMessageFactory().newMessage(getId());
 		
@@ -182,7 +182,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		}
 
 		// save the message
-		getColdBooksMessageDao().saveMessage(message);
+		getColdBooksMessageDao().saveMessage(message, allowDuplicateMessages);
 		
 		return message.getMessageId();
 	}
