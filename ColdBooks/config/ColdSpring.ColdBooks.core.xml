@@ -34,7 +34,7 @@
 	<!--// ************************************************** //-->
 	<bean id="ColdBooksQBWCTarget" class="ColdBooks.model.service.qbwc">
 		<property name="version">
-			<value>0.1-Alpha</value>
+			<value>1.0-Beta</value>
 		</property>
 		<property name="runAsBatch">
 			<value>true</value>
