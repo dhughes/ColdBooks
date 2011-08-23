@@ -144,6 +144,7 @@
 <cfargument name="pageSize" required="false" /> 
 <cfargument name="sortColumn" required="false" /> 
 <cfargument name="sortDirection" required="false" /> 
+<cfargument name="errorsOnly" required="false" /> 
 <cfset var rtn = callMethod('getConnectionLog', arguments) />
 <cfif isDefined('rtn')><cfreturn rtn /></cfif>
 </cffunction>

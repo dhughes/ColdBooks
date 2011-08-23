@@ -111,7 +111,7 @@
 							#connection.getPendingRequestCount()#
 						</td>
 						<td nowrap class="cellRightAndBottomBlueSide">
-							<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#">#connection.getErroredRequestCount()#</a>
+							<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#&errorsOnly=true">#connection.getErroredRequestCount()#</a>
 						</td>
 						<td nowrap class="cellRightAndBottomBlueSide">
 							<cfif IsDate(connection.getlastConnectionDateTime())>

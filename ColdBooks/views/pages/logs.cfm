@@ -1,5 +1,6 @@
 <cfset Id = event.getValue("Id") />
 <cfset xe.viewLogDetail = event.getValue("xe.viewLogDetail") />
+<cfset errorsOnly = event.getValue("errorsOnly", false) />
 <cfset Connection = event.getValue("Connection") />
 
 <link href="css/xml.css" type="text/css" rel="stylesheet" />
@@ -17,7 +18,8 @@
 <!---<cfdump var="#Id#" />
 <cfdump var="#Connection#" />--->
 <cfform>
-<cfgrid name="reportsGrid" format="html" pageSize="10" stripeRows="true" bind="cfc:CFIDE.administrator.ColdBooks.remote.remoteConnectionService.getConnectionLog(#Id#, {cfgridpage},{cfgridpagesize},{cfgridsortcolumn},{cfgridsortdirection})" selectonload="false" multirowselect="true" onLoad="gridLoaded">
+<cfinput type="text" id="errorsOnly" name="errorsOnly" value="#errorsOnly#" style="display:none;"/>
+<cfgrid name="reportsGrid" format="html" pageSize="10" stripeRows="true" bind="cfc:CFIDE.administrator.ColdBooks.remote.remoteConnectionService.getConnectionLog(#Id#, {cfgridpage},{cfgridpagesize},{cfgridsortcolumn},{cfgridsortdirection}, {errorsOnly@change})" selectonload="false" multirowselect="true" onLoad="gridLoaded">
 	<cfgridcolumn name="id" display="false">
 	<cfgridcolumn name="messageId" header="Message ID" display="false">
 	<cfgridcolumn name="createdDate" header="Created">

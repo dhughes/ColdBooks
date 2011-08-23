@@ -203,8 +203,8 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		return Message.getStatus();
 	}
 	
-	function getLog(sortColumn, sortDirection){
-		return getColdBooksMessageDao().getMessageHistory(getId(), sortColumn, sortDirection);
+	function getLog(sortColumn, sortDirection, errorsOnly){
+		return getColdBooksMessageDao().getMessageHistory(getId(), sortColumn, sortDirection, errorsOnly);
 	}
 	
 	function truncateLog(){

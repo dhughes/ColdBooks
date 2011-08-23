@@ -21,6 +21,17 @@ function gridLoaded(){
         handler:deleteAllMessages//Our javascript handler function that displays the alert
 	});
 
+	bbar.add('-', {
+        pressed: false,
+        enableToggle:true,
+		allowDepress:true,
+		pressed:getShowBugsOnly(),
+        text: 'Show Errors Only',
+        icon:'images/bug.png',//Icon graphic
+        cls: 'x-btn-text-icon',//The ext class that will display the button with text/icon properly
+        handler:toggleShowBugsOnly//Our javascript handler function that displays the alert
+	});
+
     //Reconfigure the layout of the toolbar again, this causes the button to show on the toolbar
     bbar.doLayout();
 
@@ -36,6 +47,20 @@ function gridLoaded(){
 		}
 	})
 };
+
+function getShowBugsOnly(){
+	return $("#errorsOnly").val() == "true";
+}
+
+function toggleShowBugsOnly(){
+	if($("#errorsOnly").val() == "true"){
+		$("#errorsOnly").val("false");
+	} else {
+		$("#errorsOnly").val("true");
+	}
+
+	ColdFusion.Grid.refresh("reportsGrid");
+}
 
 function rowClicked(){
 	var rows = ColdFusion.Grid.getSelectedRows("reportsGrid");

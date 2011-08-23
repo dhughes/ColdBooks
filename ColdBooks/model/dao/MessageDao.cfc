@@ -228,14 +228,24 @@ component extends="DAO" output="false" accessors="true"
 		return result.count;
 	}
 
-	function getMessageHistory(connectionId, sortColumn, sortDirection){
-	
-		var query = new Coldbooks.model.cf.Query(sql="
+	function getMessageHistory(connectionId, sortColumn, sortDirection, errorsOnly){
+
+		var sql="
 			SELECT id, messageId, request, response, callbackCfc, callbackFunction, returnFormat, createdDate, modifiedDate, runAfterDateTime, error
 			FROM QbMessage
-			WHERE connectionId = :connectionId 
+			WHERE connectionId = :connectionId ";
+
+		if(errorsOnly == true){
+			sql &= "
+				AND error IS NOT NULL
+			";
+		}
+
+		sql &= "
 			ORDER BY #Iif(len(sortColumn), De(sortColumn), De('id'))# #sortDirection#
-		", datasource=getDsn());
+		";
+
+		var query = new Coldbooks.model.cf.Query(sql=sql, datasource=getDsn());
 		query.addParam(name="connectionId", value=connectionId);
 		var result = query.execute().getResult();
 		

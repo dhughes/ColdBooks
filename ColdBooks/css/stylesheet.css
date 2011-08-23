@@ -17,3 +17,7 @@ table.lined tr td{
 table.lined table tr td{
 	border-bottom: none;	
 }
+
+#errorsOnly{
+	display: none;
+}

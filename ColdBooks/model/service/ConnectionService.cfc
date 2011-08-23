@@ -62,8 +62,8 @@ component accessors="true"{
 		return connection.getQwsXml();
 	}
 	
-	function getConnectionLog(id, page, pageSize, sortColumn, sortDirection){
-		var log = loadConnection(id).getLog(sortColumn, sortDirection);
+	function getConnectionLog(id, page, pageSize, sortColumn, sortDirection, errorsOnly){
+		var log = loadConnection(id).getLog(sortColumn, sortDirection, errorsOnly);
 		return queryconvertforgrid(log, page, pageSize);
 	}
 
