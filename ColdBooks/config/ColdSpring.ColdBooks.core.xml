@@ -86,5 +86,14 @@
 	</bean>	
 	
 	<bean id="ColdBooksTranslator" class="ColdBooks.model.qbxml.Translator" />
-	
+
+	<!-- this bean will mix in a cfml() function into specified objects when CS is loaded -->
+	<bean id="ColdBooksCfmlRunner" class="model.util.cfmlRunner" lazy-init="false">
+		<constructor-arg name="mixinTargets">
+			<list>
+				<ref bean="ColdBooksConnectionService" />
+			</list>
+		</constructor-arg>
+	</bean>
+
 </beans>

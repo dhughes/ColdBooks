@@ -20,6 +20,7 @@
 	<cfset this.mappings["/coldspring"] = this.mapRoot & "/coldspring" />
 	<cfset this.mappings["/modelglue"] = this.mapRoot & "/modelglue" />
 	<cfset this.mappings["/validat"] = this.mapRoot & "/validat" />
+	<cfset this.mappings["/ram"] = "ram:///" />
 
 	<cfset this.administrator = new CFIDE.adminapi.administrator() />
 	<cfset this.datasource = new CFIDE.adminapi.datasource() />

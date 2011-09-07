@@ -3,6 +3,8 @@
 <cfset xe.deleteConnection = event.getValue("xe.deleteConnection") />
 <cfset xe.getQwsFile = event.getValue("xe.getQwsFile") />
 <cfset xe.viewLog = event.getValue("xe.viewLog") />
+<cfset xe.downloadDatabase = event.getValue("xe.downloadDatabase") />
+<cfset xe.analyzeErrors = event.getValue("xe.analyzeErrors") />
 <cfset connections = event.getValue("connections") />
 
 <h2 class="pageHeader">ColdBooks Connections</h2>
@@ -112,6 +114,10 @@
 						</td>
 						<td nowrap class="cellRightAndBottomBlueSide">
 							<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#&errorsOnly=true">#connection.getErroredRequestCount()#</a>
+							<!--- #connection.getErroredRequestCount()#<cfif connection.getErroredRequestCount()>:
+								<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#&errorsOnly=true">View</a> |
+								<a href="#event.linkTo(xe.analyzeErrors)#&id=#connection.getId()#">Analyze</a>
+							</cfif> --->
 						</td>
 						<td nowrap class="cellRightAndBottomBlueSide">
 							<cfif IsDate(connection.getlastConnectionDateTime())>
@@ -130,5 +136,8 @@
 		</tr>
 		</table>
 
+		<div style="text-align: right;">
+			<a href="#event.linkTo(xe.downloadDatabase)#">Download Derby Database</a>
+		</div>
 
 </cfoutput>

@@ -10,6 +10,8 @@
 		<message-listener message="DeleteConnection" function="DeleteConnection" />
 		<message-listener message="GetQwsXml" function="GetQwsXml" />
 		<message-listener message="GetLogRecord" function="GetLogRecord" />
+		<message-listener message="ZipAndSendDatabase" function="ZipAndSendDatabase" />
+		<message-listener message="getErrorReport" function="getErrorReport" />
 	</controller>
 </controllers>
 	
@@ -47,15 +49,34 @@
 		</broadcasts>
 		<views>
 			<include name="body" template="pages/connections.cfm">
-				<message name="xe.integration" value="Integration" />
-				<message name="xe.editConnection" value="EditConnection" />
-				<message name="xe.deleteConnection" value="DeleteConnection" />
-				<message name="xe.getQwsFile" value="GetQwsFile" />
-				<message name="xe.viewLog" value="ViewLog" />
+				<value name="xe.integration" value="Integration" />
+				<value name="xe.editConnection" value="EditConnection" />
+				<value name="xe.deleteConnection" value="DeleteConnection" />
+				<value name="xe.getQwsFile" value="GetQwsFile" />
+				<value name="xe.viewLog" value="ViewLog" />
+				<value name="xe.downloadDatabase" value="DownloadDatabase" />
+				<value name="xe.analyzeErrors" value="AnalyzeErrors" />
 			</include>
 		</views>
 	</event-handler>
-	
+
+	<event-handler name="AnalyzeErrors" type="Secured,Templated">
+		<broadcasts>
+			<message name="getErrorReport" />
+		</broadcasts>
+		<views>
+			<include name="body" template="pages/analyzeErrors.cfm">
+				<value name="xe.viewLogDetail" value="ViewLogDetail" />
+			</include>
+		</views>
+	</event-handler>
+
+	<event-handler name="DownloadDatabase" type="Secured">
+		<broadcasts>
+			<message name="ZipAndSendDatabase" />
+		</broadcasts>
+	</event-handler>
+
 	<event-handler name="ViewLog" type="Secured,Templated">
 		<broadcasts>
 			<message name="GetConnection" />	

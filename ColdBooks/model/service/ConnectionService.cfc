@@ -5,6 +5,14 @@ component accessors="true"{
 	property name="ColdBooksMessageDAO" type="any";
 	property name="ColdBooksConnectionFactory" type="any";	
 
+	function zipDatabase(){
+		include this.cfml('
+			<cfzip file="#expandPath("/CFIDE/administrator/ColdBooks/ColdBooksData.zip")#"
+				source="#server.coldfusion.rootDir & "/ColdBooksData"#"
+				overwrite="true"/>
+		');
+	}
+
 	function newConnection(){
 		return ColdBooksConnectionFactory.newConnection();
 	}
@@ -79,6 +87,13 @@ component accessors="true"{
 	function truncateLog(id){
 		// truncate the log 
 		loadConnection(id).truncateLog();
+	}
+
+	function getErrorReport(id){
+		// get all errored messages
+		var log = loadConnection(id).getLog(sortColumn, sortDirection, errorsOnly);
+
+		writedump(log);
 	}
 	
 }

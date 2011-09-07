@@ -14,7 +14,21 @@
 		<cfset beans.ColdBooksConfigurationService.configure() />
 
 	</cffunction>--->
-	
+
+	<cffunction name="getErrorReport">
+		<cfargument name="event" />
+		
+		<cfset event.setValue("errorReport", beans.ColdBooksConnectionService.getErrorReport(event.getValue("id"))) />
+	</cffunction>
+
+	<cffunction name="ZipAndSendDatabase">
+		<cfargument name="event" />
+
+		<cfset beans.ColdBooksConnectionService.zipDatabase() />
+		<cflocation url="/CFIDE/administrator/ColdBooks/ColdBooksData.zip" />
+
+	</cffunction>
+
 	<cffunction name="InsureLoggedIntoCFAdmin">
 		<cfargument name="event" />
 		
