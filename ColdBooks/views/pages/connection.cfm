@@ -9,8 +9,6 @@
 <script language="JavaScript" type="application/javascript" src="scripts/jquery-1.6.2.min.js"></script>
 <script language="JavaScript" type="application/javascript" src="scripts/connection.js"></script>
 
-<link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
-
 <h2 class="pageHeader">Add / Edit QuickBooks Connection</h2>
 
 <p>Use the form below to create a new connection to QuickBooks using ColdBooks.</p>

@@ -16,7 +16,7 @@ component{
 		markup &= chr(13) & chr(10);
 		markup &= '<cffile action="delete" file="#path#" />';
 
-		writelog(markup);
+		//writelog(markup);
 
 		fileWrite(path, arguments.markup);
 

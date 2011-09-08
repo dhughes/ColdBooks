@@ -92,6 +92,7 @@
 		<constructor-arg name="mixinTargets">
 			<list>
 				<ref bean="ColdBooksConnectionService" />
+				<ref bean="ColdBooksMessageDao" />
 			</list>
 		</constructor-arg>
 	</bean>

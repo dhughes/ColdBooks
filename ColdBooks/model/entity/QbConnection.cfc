@@ -202,9 +202,13 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		var Message = getColdBooksMessageDao().getMessageByMessageId(messageId);
 		return Message.getStatus();
 	}
-	
-	function getLog(sortColumn, sortDirection, errorsOnly){
-		return getColdBooksMessageDao().getMessageHistory(getId(), sortColumn, sortDirection, errorsOnly);
+
+	function getErroredRequests(){
+		return getColdBooksMessageDao().getErroredRequests(getId());
+	}
+
+	function getLog(sortColumn, sortDirection, page, pageSize, errorsOnly){
+		return getColdBooksMessageDao().getMessageHistory(getId(), sortColumn, sortDirection, page, pageSize, errorsOnly);
 	}
 	
 	function truncateLog(){
@@ -327,7 +331,11 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		
 		return xml;
 	}
-	
+
+	function getRequestCount(){
+		return getColdBooksMessageDao().getRequestCountForConnection(getId());
+	}
+
 	function getPendingRequestCount(){
 		return getColdBooksMessageDao().getPendingRequestCountForConnection(getId(), true);
 	}

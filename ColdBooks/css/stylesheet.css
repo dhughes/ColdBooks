@@ -21,3 +21,10 @@ table.lined table tr td{
 #errorsOnly{
 	display: none;
 }
+
+#analysis{
+	border: 1px solid black;
+	width: 100%;
+	height: 20em;
+	overflow:  scroll;
+}

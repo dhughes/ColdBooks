@@ -71,8 +71,18 @@ component accessors="true"{
 	}
 	
 	function getConnectionLog(id, page, pageSize, sortColumn, sortDirection, errorsOnly){
-		var log = loadConnection(id).getLog(sortColumn, sortDirection, errorsOnly);
-		return queryconvertforgrid(log, page, pageSize);
+		var connection = loadConnection(id);
+		var log = connection.getLog(sortColumn, sortDirection, page, pageSize, errorsOnly);
+		var logCount = "";
+		if(!errorsOnly){
+			logCount = connection.getRequestCount();
+		} else {
+			logCount = connection.getErroredRequestCount();
+		}
+
+		var data = queryconvertforgrid(log, 1, pageSize);
+		data.totalRowCount = logCount;
+		return data;
 	}
 
 	function deleteMessages(ids){
@@ -91,9 +101,9 @@ component accessors="true"{
 
 	function getErrorReport(id){
 		// get all errored messages
-		var log = loadConnection(id).getLog(sortColumn, sortDirection, errorsOnly);
+		var log = loadConnection(id).getErroredRequests();
 
-		writedump(log);
+		return log;
 	}
 	
 }

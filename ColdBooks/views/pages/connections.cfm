@@ -113,11 +113,11 @@
 							#connection.getPendingRequestCount()#
 						</td>
 						<td nowrap class="cellRightAndBottomBlueSide">
-							<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#&errorsOnly=true">#connection.getErroredRequestCount()#</a>
-							<!--- #connection.getErroredRequestCount()#<cfif connection.getErroredRequestCount()>:
+							<!--- <a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#&errorsOnly=true">#connection.getErroredRequestCount()#</a> --->
+							#connection.getErroredRequestCount()#<cfif connection.getErroredRequestCount()>:
 								<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#&errorsOnly=true">View</a> |
 								<a href="#event.linkTo(xe.analyzeErrors)#&id=#connection.getId()#">Analyze</a>
-							</cfif> --->
+							</cfif>
 						</td>
 						<td nowrap class="cellRightAndBottomBlueSide">
 							<cfif IsDate(connection.getlastConnectionDateTime())>

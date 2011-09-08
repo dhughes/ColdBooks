@@ -215,6 +215,15 @@ component extends="DAO" output="false" accessors="true"
 		return query.execute().getResult();
 	}
 
+	function getRequestCountForConnection(connectionId){
+		var sql = "SELECT COUNT(*) as count FROM QbMessage WHERE connectionId = :connectionId ";
+
+		var query = new Coldbooks.model.cf.Query(sql=sql, datasource=getDsn());
+		query.addParam(name="connectionId", value=connectionId);
+		var result = query.execute().getResult();
+
+		return result.count;
+	}
 	
 	function getPendingRequestCountForConnection(connectionId, filterFutureMessages){
 		var sql = "SELECT COUNT(*) as count FROM QbMessage WHERE connectionId = :connectionId AND response IS NULL AND error IS NULL ";
@@ -228,27 +237,59 @@ component extends="DAO" output="false" accessors="true"
 		return result.count;
 	}
 
-	function getMessageHistory(connectionId, sortColumn, sortDirection, errorsOnly){
+	function getErroredRequests(connectionId){
 
-		var sql="
-			SELECT id, messageId, request, response, callbackCfc, callbackFunction, returnFormat, createdDate, modifiedDate, runAfterDateTime, error
-			FROM QbMessage
-			WHERE connectionId = :connectionId ";
+		var result = "";
 
-		if(errorsOnly == true){
-			sql &= "
+		include this.cfml('
+			<cfquery name="result" datasource="#getDsn()#">
+				SELECT
+
+				XMLSERIALIZE(
+					xmlquery(''name(//@statusMessage/..)'' PASSING BY REF xmlparse(DOCUMENT response PRESERVE WHITESPACE)  EMPTY ON EMPTY)
+					AS varchar(100)
+				) as requestName,
+
+				XMLSERIALIZE(
+					xmlquery(''string(//@statusCode)'' PASSING BY REF xmlparse(DOCUMENT response PRESERVE WHITESPACE)  EMPTY ON EMPTY)
+					AS varchar(100)
+				) as statusCode,
+
+				XMLSERIALIZE(
+					xmlquery(''string(//@statusMessage)'' PASSING BY REF xmlparse(DOCUMENT response PRESERVE WHITESPACE)  EMPTY ON EMPTY)
+					AS varchar(32000)
+				) as statusMessage,
+
+				id
+
+				FROM QbMessage
+				WHERE connectionId = <cfqueryparam value="#arguments.connectionId#" />
 				AND error IS NOT NULL
-			";
-		}
+				ORDER BY requestName, statusCode, statusMessage, id
+			</cfquery>
+		');
 
-		sql &= "
-			ORDER BY #Iif(len(sortColumn), De(sortColumn), De('id'))# #sortDirection#
-		";
+		return result;
+	}
 
-		var query = new Coldbooks.model.cf.Query(sql=sql, datasource=getDsn());
-		query.addParam(name="connectionId", value=connectionId);
-		var result = query.execute().getResult();
-		
+	function getMessageHistory(connectionId, sortColumn, sortDirection, page, pageSize, errorsOnly){
+
+		var result = "";
+		var start = (page*pageSize)-(pageSize-1);
+
+		include this.cfml('
+			<cfquery name="result" datasource="#getDsn()#">
+				SELECT id, messageId, request, response, callbackCfc, callbackFunction, returnFormat, createdDate, modifiedDate, runAfterDateTime, error
+				FROM QbMessage
+				WHERE connectionId = <cfqueryparam value="#connectionId#" />
+				<cfif errorsOnly>
+					AND error IS NOT NULL
+				</cfif>
+				ORDER BY #Iif(len(sortColumn), De(sortColumn), De('id'))# #sortDirection#
+        	    OFFSET #start# ROWS FETCH NEXT #pageSize# ROWS ONLY
+			</cfquery>
+		');
+
 		for(var x = 1 ; x <= result.recordCount ; x++){
 			querySetCell(result,"request",htmlEditFormat(result["request"][x]),x);
 			querySetCell(result,"response",htmlEditFormat(result["response"][x]),x);	

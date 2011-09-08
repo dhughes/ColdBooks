@@ -3,7 +3,9 @@
 <head>
 	<title>ColdBooks Manager</title>
 	
-	
+
+<link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" type="application/javascript" src="scripts/jquery-1.6.2.min.js"></script>
 <style>
 body, p, td {
 	font-family: Arial, Helvetica, sans-serif;
