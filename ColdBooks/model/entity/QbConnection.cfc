@@ -40,6 +40,11 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 			var cfc = cfcs[i];
 			var threadId = "EventHandler#createUUID()#";
 
+			if(!FileExists(cfc)){
+				// whoops, the file doesn't exist!
+				throw("File '#cfc#' does not exist!");
+			}
+
 			// spawn a thread to prevent hosing the web service call (not sure why that happens)
 			thread
 				action="run"
@@ -203,6 +208,10 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		return Message.getStatus();
 	}
 
+	function getRequest(messageId){
+		return getColdBooksMessageDao().getMessageByMessageId(messageId);
+	}
+
 	function getErroredRequests(){
 		return getColdBooksMessageDao().getErroredRequests(getId());
 	}
@@ -276,7 +285,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 			var CFCProxy = CreateObject("Java", "coldfusion.cfc.CFCProxy").init(cfc);
 			CFCProxy.invoke(method, [response, requestId, connection, ColdBooksSession], getPageContext().getRequest(), getPageContext().getResponse());
 		}
-		
+
 		// join the thread....
 		thread
 			action="join"

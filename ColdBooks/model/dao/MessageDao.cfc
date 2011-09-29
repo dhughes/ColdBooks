@@ -275,7 +275,7 @@ component extends="DAO" output="false" accessors="true"
 	function getMessageHistory(connectionId, sortColumn, sortDirection, page, pageSize, errorsOnly){
 
 		var result = "";
-		var start = (page*pageSize)-(pageSize-1);
+		var start = (page*pageSize)-(pageSize);
 
 		include this.cfml('
 			<cfquery name="result" datasource="#getDsn()#">
@@ -314,7 +314,15 @@ component extends="DAO" output="false" accessors="true"
 	}
 	
 	function getMessageByMessageId(messageId){
-		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbMessage WHERE messageId = :messageId", datasource=getDsn());
+		messageId = replace(messageId, "{", "");
+		messageId = replace(messageId, "}", "");
+
+		if(mid(messageId, 24, 1) == "-"){
+			messageId = left(messageId, 23) & right(messageId, 12);
+		}
+
+		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbMessage WHERE messageId = :messageId ", datasource=getDsn());
+
 		query.addParam(name="messageId", value=messageId);
 		var Message = query.execute().getResult();
 		

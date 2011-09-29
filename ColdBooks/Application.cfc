@@ -121,6 +121,8 @@
 
                 <cflocation url="#cgi.script_name#?init=true" addtoken="false" />
 			</cfif>
+
+			
 		</cfif>
 
 
@@ -231,6 +233,9 @@
 		<cfif structKeyExists( application, this.realName ) AND structKeyExists( application[this.realName], "framework" ) >
 			<cfset application[this.realName].framework.getBeanFactory().setParent( application.cs ) />
 		</cfif>
+
+		<!--- run any migrations we may have --->
+		<cfset application.cs.getBean("ColdBooksMigrator").migrate() />
 
 	</cffunction>
 

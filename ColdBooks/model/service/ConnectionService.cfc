@@ -69,7 +69,7 @@ component accessors="true"{
 		var connection = loadConnection(id);
 		return connection.getQwsXml();
 	}
-	
+
 	function getConnectionLog(id, page, pageSize, sortColumn, sortDirection, errorsOnly){
 		var connection = loadConnection(id);
 		var log = connection.getLog(sortColumn, sortDirection, page, pageSize, errorsOnly);
