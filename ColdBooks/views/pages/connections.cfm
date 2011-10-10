@@ -117,6 +117,8 @@
 							#connection.getErroredRequestCount()#<cfif connection.getErroredRequestCount()>:
 								<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#&errorsOnly=true">View</a> |
 								<a href="#event.linkTo(xe.analyzeErrors)#&id=#connection.getId()#">Analyze</a>
+							<cfelse>
+								<a href="#event.linkTo(xe.viewLog)#&id=#connection.getId()#&errorsOnly=true">View Logs</a>
 							</cfif>
 						</td>
 						<td nowrap class="cellRightAndBottomBlueSide">

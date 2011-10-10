@@ -264,7 +264,7 @@ component extends="DAO" output="false" accessors="true"
 
 				FROM QbMessage
 				WHERE connectionId = <cfqueryparam value="#arguments.connectionId#" />
-				AND error IS NOT NULL
+				AND (error IS NOT NULL OR response LIKE <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="%Error%" />)
 				ORDER BY requestName, statusCode, statusMessage, id
 			</cfquery>
 		');
@@ -283,7 +283,7 @@ component extends="DAO" output="false" accessors="true"
 				FROM QbMessage
 				WHERE connectionId = <cfqueryparam value="#connectionId#" />
 				<cfif errorsOnly>
-					AND error IS NOT NULL
+					AND (error IS NOT NULL OR response LIKE <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="%Error%" />)
 				</cfif>
 				ORDER BY #Iif(len(sortColumn), De(sortColumn), De('id'))# #sortDirection#
         	    OFFSET #start# ROWS FETCH NEXT #pageSize# ROWS ONLY
@@ -299,7 +299,7 @@ component extends="DAO" output="false" accessors="true"
 	}
 
 	function getErroredRequestCountForConnection(connectionId){
-		var query = new Coldbooks.model.cf.Query(sql="SELECT COUNT(*) as count FROM QbMessage WHERE connectionId = :connectionId AND error IS NOT NULL", datasource=getDsn());
+		var query = new Coldbooks.model.cf.Query(sql="SELECT COUNT(*) as count FROM QbMessage WHERE connectionId = :connectionId AND (error IS NOT NULL OR response LIKE '%Error%')", datasource=getDsn());
 		query.addParam(name="connectionId", value=connectionId);
 		var result = query.execute().getResult();
 		
