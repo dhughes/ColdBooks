@@ -288,7 +288,7 @@
 
 	<cffunction name="mergeStructs" access="private">
 		<cfargument name="struct1" />
-		<cfargument name="struct2" /> />
+		<cfargument name="struct2" />
 		<cfset StructAppend(struct1, struct2) />
 		<cfreturn struct1 />
 	</cffunction>
