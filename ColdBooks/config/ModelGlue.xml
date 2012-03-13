@@ -2,10 +2,11 @@
 <modelglue>
 
 <controllers>
-	<controller id="Controller" type="controller.Controller" beans="ColdBooksSecurityService,ColdBooksConnectionService,ColdBooksMessageService">
+	<controller id="Controller" type="controller.Controller" beans="ColdBooksSecurityService,ColdBooksConnectionService,ColdBooksMessageService,ColdBooksDbConfig">
 		<message-listener message="InsureLoggedIntoCFAdmin" function="InsureLoggedIntoCFAdmin" />
 		<message-listener message="SaveConnection" function="SaveConnection" />
 		<message-listener message="ListConnections" function="ListConnections" />
+		<message-listener message="GetDbType" functions="GetDbType" />
 		<message-listener message="GetConnection" function="GetConnection" />
 		<message-listener message="DeleteConnection" function="DeleteConnection" />
 		<message-listener message="GetQwsXml" function="GetQwsXml" />
@@ -45,7 +46,8 @@
 	
 	<event-handler name="Connections" type="Secured,Templated">
 		<broadcasts>
-			<message name="ListConnections" />	
+			<message name="ListConnections" />
+			<message name="GetDbType" />
 		</broadcasts>
 		<views>
 			<include name="body" template="pages/connections.cfm">

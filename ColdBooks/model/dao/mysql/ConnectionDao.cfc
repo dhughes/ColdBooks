@@ -1,17 +1,17 @@
 /**
  * Database behavior for Connection
  */
-component extends="DAO" output="false" accessors="true"
+component extends="ColdBooks.model.dao.DAO" output="false" accessors="true"
 {
 
-	property name="ColdBooksConnectionFactory" type="any";	
-	
+	property name="ColdBooksConnectionFactory" type="any";
+
 	public function init()
 	{
 		super.init();
 		return this;
 	}
-	
+
 	public function loadConnection( id )
 	{
 		var query = new Coldbooks.model.cf.Query(sql="SELECT * FROM QbConnection WHERE id = :id ", datasource=getDsn());

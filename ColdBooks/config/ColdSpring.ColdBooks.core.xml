@@ -2,6 +2,10 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans default-autowire="byName"> 
+	<!--// To switch to MySQL comment out Derby and uncomment MySQL //-->
+	<!-- <import resource="/CFIDE/administrator/ColdBooks/config/ColdSpring.ColdBooks.derby.xml" /> -->
+	<import resource="/CFIDE/administrator/ColdBooks/config/ColdSpring.ColdBooks.mysql.xml" />
+
 	<!--// ************************************************** //-->
 	<!--// Validat configuration //-->
 	<!-- note that I'm importing twice. Depending on how CB is being used we may or may not
@@ -65,14 +69,7 @@
 			<value>ColdBooksData</value>
 		</property>
 	</bean>
-	
-	<bean id="ColdBooksConnectionDao" class="ColdBooks.model.dao.ConnectionDao" />
-	<bean id="ColdBooksMessageDao" class="ColdBooks.model.dao.MessageDao">
-		<property name="maxMessages">
-			<value>25</value>
-		</property>
-	</bean>
-	
+
 	<bean id="ColdBooksSession" class="ColdBooks.model.session.Session">
 		<property name="timeout">
 			<value>240</value>
@@ -97,8 +94,5 @@
 			</list>
 		</constructor-arg>
 	</bean>
-
-	<!-- this bean handles making sure we have the latest changes to the database applied -->
-	<bean id="ColdBooksMigrator" class="ColdBooks.model.util.migrator" />
 
 </beans>

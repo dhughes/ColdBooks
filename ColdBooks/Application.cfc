@@ -25,6 +25,7 @@
 	<cfset this.administrator = new CFIDE.adminapi.administrator() />
 	<cfset this.datasource = new CFIDE.adminapi.datasource() />
 
+	<!---
 	<cffunction name="databaseExists" access="private">
 
 		<cftry>
@@ -73,6 +74,7 @@
 		</cftry>
 
 	</cffunction>
+	--->
 
 	<cffunction name="onApplicationStart" returnType="boolean" output="false">
 		<cfreturn true>
@@ -99,7 +101,12 @@
 	<cffunction name="onRequestStart" returnType="boolean" output="false">
 		<cfargument name="thePage" type="string" required="true" />
 
-		<!--- insure derby is running in network mode --->
+		<!--- only do coldbooks stuff if the user is logged in --->
+		<cfif !(listLast( arguments.thePage, "." ) EQ "cfc" OR isSOAPRequest()) && !IsUserLoggedIn()>
+			<cflocation url="/CFIDE/Administrator/index.cfm" addtoken="false" />
+		</cfif>
+
+		<!--- insure derby is running in network mode
 		<cfset startDerby() />
 
 		<!--- are we logged into the CF admin? --->
@@ -123,19 +130,18 @@
 			</cfif>
 
 			
-		</cfif>
-
-
+		</cfif> --->
 
 		<!---// Reload app and session if requested //--->
 		<cfif structKeyExists( url, "init" ) AND url.init EQ "true" >
-		
+
 			<!---<cfif this.debug >
 				<cflog file="#this.realName#" text="Reloading Application" />
 			</cfif>--->
 
 			<cfparam name="request.init" default="reloaded" />
 			<cflock scope="application" timeout="10">
+
 				<!--- <cfset structClear(session) /> --->
 				<cfset structClear( application ) />
 				<cfset onApplicationStart() />
@@ -178,7 +184,7 @@
 
 	<!---// -------------------------------------------------- //--->
 
-	<cffunction name="initializeDatabase" output="false" access="private">
+	<!--- <cffunction name="initializeDatabase" output="false" access="private">
 		<cfset var dataDir = server.coldfusion.rootDir & "/ColdBooksData" />
 		
 		<cfapplication name="cfadmin" />
@@ -207,13 +213,7 @@
 				</cfif>
 			</cflock>
  		</cfif>
-	</cffunction>
-	
-	<!---<cffunction name="databaseExists" output="false" access="private">
-		<cfset var dataDir = server.coldfusion.rootDir & "/ColdBooksData" />
-		<cfreturn ListFind(StructKeyList(CreateObject("component", "CFIDE.adminapi.datasource").getDatasources()), "ColdBooksData") IS NOT 0
-			AND directoryExists(dataDir) />  
-	</cffunction>--->
+	</cffunction> --->
 
 	<cffunction name="initializeBeanFactory" output="false" access="private">
 	

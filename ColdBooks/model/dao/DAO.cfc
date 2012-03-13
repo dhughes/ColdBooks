@@ -11,9 +11,6 @@ component output="false" accessors="true"
 	
 	public function init()
 	{
-		// insure derby is started
-		new ColdBooks.Application().startDerby();
-		
 		return this;
 	}
 	

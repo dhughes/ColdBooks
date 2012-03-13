@@ -1,12 +1,12 @@
 /**
  * Database behavior for Message
  */
-component extends="DAO" output="false" accessors="true"
+component extends="MySQLsdadsa" output="false" accessors="true"
 {
 
 	property name="ColdBooksMessageFactory" type="any";
 	property name="maxMessages";
-	
+
 	public function init()
 	{
 		super.init();

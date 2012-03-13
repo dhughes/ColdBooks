@@ -17,7 +17,6 @@
 
 	<cffunction name="getErrorReport">
 		<cfargument name="event" />
-		
 		<cfset event.setValue("errorReport", beans.ColdBooksConnectionService.getErrorReport(event.getValue("id"))) />
 	</cffunction>
 
@@ -52,13 +51,23 @@
 		</cfif>
 		
 	</cffunction>
-	
+
 	<cffunction name="ListConnections">
 		<cfargument name="event" />
-		
+
 		<cfset event.setValue("connections", beans.ColdBooksConnectionService.listConnections()) />
-		
+
 	</cffunction>
+
+	<cffunction name="getDbType">
+		<cfargument name="event" />
+
+		<cfset event.setValue("dbType", beans.ColdBooksDbConfig.GetConfigSetting("dbType")) />
+
+	</cffunction>
+
+
+
 	
 	<cffunction name="DeleteConnection">
 		<cfargument name="event" />

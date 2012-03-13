@@ -6,6 +6,7 @@
 <cfset xe.downloadDatabase = event.getValue("xe.downloadDatabase") />
 <cfset xe.analyzeErrors = event.getValue("xe.analyzeErrors") />
 <cfset connections = event.getValue("connections") />
+<cfset dbtype = event.getValue("dbtype") />
 
 <h2 class="pageHeader">ColdBooks Connections</h2>
 
@@ -138,8 +139,11 @@
 		</tr>
 		</table>
 
-		<div style="text-align: right;">
-			<a href="#event.linkTo(xe.downloadDatabase)#">Download Derby Database</a>
-		</div>
+		<cfif dbtype IS "derby">
+			<div style="text-align: center;">
+				<br />
+				<a href="#event.linkTo(xe.downloadDatabase)#">Download Derby Database</a>
+			</div>
+		</cfif>
 
 </cfoutput>
