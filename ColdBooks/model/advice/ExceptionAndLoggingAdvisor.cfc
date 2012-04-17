@@ -68,8 +68,12 @@
 				</cfif>
 
 				<!--- try to record this message --->
+				<cftry>
 					<cfset arguments.methodInvocation.getTarget().setError(connectionId, cfcatch) />
-
+					<cfcatch>
+						<cflog text="#toString(cfcatch)#" />
+					</cfcatch>
+				</cftry>
 				<cfthrow message="#cfcatch.message# | #cfcatch.detail# | #cfcatch.tagcontext[1].template# (#cfcatch.tagcontext[1].line#)" />
 			</cfcatch>
 		</cftry>
