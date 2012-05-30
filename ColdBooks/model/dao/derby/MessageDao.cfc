@@ -1,7 +1,7 @@
 /**
  * Database behavior for Message
  */
-component extends="ColdBooks.model.dao.DerbyDAO" output="false" accessors="true"
+component extends="ColdBooks.model.dao.derby.DerbyDAO" output="false" accessors="true"
 {
 
 	property name="ColdBooksMessageFactory" type="any";
