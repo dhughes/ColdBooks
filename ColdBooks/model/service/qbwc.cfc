@@ -3,7 +3,6 @@
 	<cfproperty name="ColdBooksConnectionService" type="any" />
 	<cfproperty name="ColdBooksConnectionDao" type="any" />
 	<cfproperty name="ColdBooksSession" type="any" />
-	<cfproperty name="ColdBooksTranslator" type="any" />
 	<cfproperty name="version" type="any" />
 	<cfproperty name="runAsBatch" type="boolean" />
 
@@ -161,11 +160,16 @@
 				<cfset var Objects = getColdBooksTranslator().toObjects(strHCPResponse, qbXMLCountry, qbXMLMajorVers, qbXMLMinorVers) />
 				<cfdump var="#Objects#" output="console">
 			</cfif> --->
-			<cfif getrunAsBatch() AND NOT ColdBooksSession.getOverrideBatch(ticket)>
-				<cfset var xml = Connection.getNextPendingMessageSetXml() />
-			<cfelse>
-				<cfset var xml = Connection.getNextPendingMessageXml() />
-			</cfif>
+			<cftry>
+				<cfif getrunAsBatch() AND NOT ColdBooksSession.getOverrideBatch(ticket)>
+					<cfset var xml = Connection.getNextPendingMessageSetXml() />
+				<cfelse>
+					<cfset var xml = Connection.getNextPendingMessageXml() />
+				</cfif>
+				<cfcatch>
+					<cfset var xml = "" />
+				</cfcatch>
+			</cftry>
 		</cfif>
 		
 		

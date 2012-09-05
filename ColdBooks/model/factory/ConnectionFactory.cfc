@@ -4,10 +4,10 @@
 component output="false" accessors="true"
 {
 
-	property name="ColdBooksJavaLoader" type="any";
+	//property name="ColdBooksJavaLoader" type="any";
 	property name="ColdBooksMessageFactory" type="any";
 	property name="ColdBooksMessageDao" type="any";
-	property name="ColdBooksTranslator" type="any";
+	//property name="ColdBooksTranslator" type="any";
 	property name="ColdBooksSession" type="any";
 
 	public function init()
@@ -20,10 +20,10 @@ component output="false" accessors="true"
 		var Connection =  new ColdBooks.model.entity.QbConnection();
 		Connection.setConnectionId(createUUID());
 		Connection.setFileId(createUUID());
-		Connection.setColdBooksJavaLoader(getColdBooksJavaLoader());
+		//Connection.setColdBooksJavaLoader(getColdBooksJavaLoader());
 		Connection.setColdBooksMessageFactory(getColdBooksMessageFactory());
 		Connection.setColdBooksMessageDao(getColdBooksMessageDao());
-		Connection.setColdBooksTranslator(getColdBooksTranslator());
+		//Connection.setColdBooksTranslator(getColdBooksTranslator());
 		Connection.setColdBooksSession(getColdBooksSession());
 		
 		return Connection;

@@ -3,10 +3,10 @@
 */
 component extends="Entity" output="false" accessors="true" displayname="Connection" {
 	
-	property name="ColdBooksJavaLoader" type="any";
+	//property name="ColdBooksJavaLoader" type="any";
 	property name="ColdBooksMessageFactory" type="any";
 	property name="ColdBooksMessageDao" type="any";
-	property name="ColdBooksTranslator" type="any";
+	//property name="ColdBooksTranslator" type="any";
 	property name="ColdBooksSession" type="any";
 	
 	property name="id" type="numeric";
@@ -148,6 +148,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		return message.getMessageId();
 	}
 	
+	/*
 	function sendRequest(object, callbackCFC, callbackFunction, returnFormat, delay, allowDuplicateMessages=true){
 		// this needs to create and record a message
 		var message = getColdBooksMessageFactory().newMessage(getId());
@@ -191,6 +192,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		
 		return message.getMessageId();
 	}
+	*/
 
 	private function processDelay(delay){
 		// do we have any delay information?
@@ -261,11 +263,11 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	
 	private function callBack(cfc, method, returnFormat, response, requestId){
 		
-		if(returnFormat == "object"){
+		/*if(returnFormat == "object"){
 			// we need to create a complete response object, serialize it then get the specific object back.
 			response = getColdBooksTranslator().toObjects(wrapXmlResponse(response), this);
 			response = response.getQBXMLMsgsRs().getHostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs();
-		}
+		}*/
 
 		var ColdBooksSession = getColdBooksSession();
 
@@ -402,7 +404,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		}
 	}
 	
-	function getQbObjectFactory(){
+	/*function getQbObjectFactory(){
 		var loader = getColdBooksJavaLoader();
 
 		if(!Len(getCountry()) || !Len(getQbXmlMajorVersion()) || !Len(getQbXmlMinorVersion())){
@@ -411,7 +413,7 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 
 		// I've got my loader, I now need to get the object factory for this country and version
 		return loader.create("com.alagad.ColdBooks.#ucase(getCountry())#.v#getSdkVersion()#.ObjectFactory");
-	}
+	}*/
 	
 	function setPassword(password){
 		// if the password provided is the same as the hash do nothing.  we didn't change the password
