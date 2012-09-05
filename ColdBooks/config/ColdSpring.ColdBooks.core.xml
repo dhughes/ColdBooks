@@ -41,7 +41,7 @@
 			<value>1.0-Beta</value>
 		</property>
 		<property name="runAsBatch">
-			<value>true</value>
+			<value>false</value>
 		</property>
 	</bean>
 	

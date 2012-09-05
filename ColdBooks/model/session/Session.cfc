@@ -17,7 +17,7 @@ component accessors="true"{
 		application.ColdBooksSessions[connectionId].startTick = getTickCount();
 		application.ColdBooksSessions[connectionId].Connection = Connection;
 		application.ColdBooksSessions[connectionId].OverrideBatch = false;
-		application.ColdBooksSessions[connectionId].error = "No error recorded.  You should check the ColdFusion logs for server errors.";
+		application.ColdBooksSessions[connectionId].error = "";
 		application.ColdBooksSessions[connectionId].totalRequests = Connection.getPendingRequestCount();
 
 		application.ColdBooksSessions[connectionId].values = {};
@@ -41,6 +41,10 @@ component accessors="true"{
 			writedump(arguments.connectionId, "console");
 			rethrow;
 		}*/
+	}
+	
+	function deleteValue(connectionId, name){
+		structDelete(application.ColdBooksSessions[connectionId], name);
 	}
 
 	function valueExists(connectionId, name){
@@ -85,6 +89,11 @@ component accessors="true"{
 		}
 	
 		application.ColdBooksSessions[connectionId].lastConnected = now();
+	}
+	
+	function hasError(connectionId){
+		
+		return StructKeyExists(application.ColdBooksSessions, connectionId) && (!IsSimpleValue(application.ColdBooksSessions[connectionId].error) || Len(application.ColdBooksSessions[connectionId].error));
 	}
 	
 	function setError(connectionId, error){

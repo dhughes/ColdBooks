@@ -16,7 +16,7 @@
 		<cfargument name="data" />
 
 		<!--- todo: factor out into a logging class --->
-		<cflog text="Raising Event: #arguments.event#" />
+		<cflog text="Raising Event: #arguments.event#"  />
 
 		<cfset local.result = arguments.Connection.handleEvent(event=event, data=data, ColdBooksSession=getColdBooksSession().getAllValues(Connection.getConnectionId())) />
 		<cfif !IsSimpleValue(local.result)>
@@ -136,27 +136,39 @@
 		<cfargument name="qbXMLMinorVers" type="Any" />
 
 		<cfset var ColdBooksSession = getColdBooksSession() />
-		
-		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
-		
-		<cfset Connection.setCompanyFile(strCompanyFileName) />
-		<cfset Connection.setCountry(qbXMLCountry) />
-		<cfset Connection.setQbXMLMajorVersion(qbXMLMajorVers) />
-		<cfset Connection.setQbXMLMinorVersion(qbXMLMinorVers) />
-		<cfset Connection.setLastConnectionDateTime(now()) />
-		<cfset ColdBooksConnectionDao.saveConnection(Connection) />
 
-		<!--- on the first request, QuickBooks volunteers some information --->
-		<!--- because this code is essentially asynchronous, I can't find a use for this and I've commented it out
-		<cfif Len(strHCPResponse)>
-			<cfset var Objects = getColdBooksTranslator().toObjects(strHCPResponse, qbXMLCountry, qbXMLMajorVers, qbXMLMinorVers) />
-			<cfdump var="#Objects#" output="console">
-		</cfif> --->
-		<cfif getrunAsBatch() AND NOT ColdBooksSession.getOverrideBatch(ticket)>
-			<cfset var xml = Connection.getNextPendingMessageSetXml() />
+		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
+
+		<cfif ColdBooksSession.hasError(ticket)>
+			<!--- we have an error and want to kill this process --->
+			<cfreturn "" />
+			
+		<cfelseif ColdBooksSession.valueExists(ticket, "isRunning") && ColdBooksSession.getValue(ticket, "isRunning")>	
+			<cflog text="Another process is running" />
+			<!--- return an empty string (which becomes a request with no instructions and is returned as a response with no responses) to indicate it needs to ask me again --->
+			<cfset var xml = "" />
 		<cfelse>
-			<cfset var xml = Connection.getNextPendingMessageXml() />
+			<cfset Connection.setCompanyFile(strCompanyFileName) />
+			<cfset Connection.setCountry(qbXMLCountry) />
+			<cfset Connection.setQbXMLMajorVersion(qbXMLMajorVers) />
+			<cfset Connection.setQbXMLMinorVersion(qbXMLMinorVers) />
+			<cfset Connection.setLastConnectionDateTime(now()) />
+			<cfset ColdBooksConnectionDao.saveConnection(Connection) />
+	
+			<!--- on the first request, QuickBooks volunteers some information --->
+			<!--- because this code is essentially asynchronous, I can't find a use for this and I've commented it out
+			<cfif Len(strHCPResponse)>
+				<cfset var Objects = getColdBooksTranslator().toObjects(strHCPResponse, qbXMLCountry, qbXMLMajorVers, qbXMLMinorVers) />
+				<cfdump var="#Objects#" output="console">
+			</cfif> --->
+			<cfif getrunAsBatch() AND NOT ColdBooksSession.getOverrideBatch(ticket)>
+				<cfset var xml = Connection.getNextPendingMessageSetXml() />
+			<cfelse>
+				<cfset var xml = Connection.getNextPendingMessageXml() />
+			</cfif>
 		</cfif>
+		
+		
 
 		<cfset var wrappedXml = Connection.wrapXmlRequests(xml) />
 
@@ -192,74 +204,101 @@
 
         <cfset arguments.ColdBooksSession = getColdBooksSession() />
 		<cfset var Connection = ColdBooksSession.getConnection(wcTicket) />
-		<cfset arguments.totalRequests = ColdBooksSession.getTotalRequests(wcTicket) />
-
+		
+		<cfif !ColdBooksSession.valueExists(wcTicket, "totalRequests")>
+			<cfset ColdBooksSession.setValue(wcTicket, "totalRequests", ColdBooksSession.getTotalRequests(wcTicket)) />
+			<cfset ColdBooksSession.setValue(wcTicket, "completedRequests", 0) />
+		</cfif>
+		
+		<cfset arguments.totalRequests = ColdBooksSession.getValue(wcTicket, "totalRequests") />
+		<cfset arguments.completedRequests = ColdBooksSession.getValue(wcTicket, "completedRequests") />
+		
 		<cfset raiseEvent(Connection, "onBeforeReceiveResponseXML", arguments) />
-
+			
 		<!--- is the response an error message? --->
-		<cfif NOT Len(response)>
-			<!---
-				We had an error from Quickbooks.  Sadly, if we're running batches and not individual transactions
-				then QB doesn't tell us which specific message was the problem.  In this case we're going to shut
-				off batch mode temporarily and rerun each transaction individually.
-			--->
-			<!--- check to see if we're in batch mode --->
-			<cfif getRunAsBatch() AND NOT ColdBooksSession.getOverrideBatch(wcTicket)>
-				<cflog text="There was an error running the batch.  We'll retry the transactions individually.: Hresult: #hresult#, Message: #message#." />
-				<cfset ColdBooksSession.setOverrideBatch(wcTicket, true) />
-
+		<cfif !(ColdBooksSession.valueExists(wcTicket, "isRunning") && ColdBooksSession.getValue(wcTicket, "isRunning"))>
+			
+			<cfif NOT Len(response)>
+				<cflog text="********************************* GOT HERE" />
+				<!---
+					We had an error from Quickbooks.  Sadly, if we're running batches and not individual transactions
+					then QB doesn't tell us which specific message was the problem.  In this case we're going to shut
+					off batch mode temporarily and rerun each transaction individually.
+				--->
+				<!--- check to see if we're in batch mode --->
+				<cfif getRunAsBatch() AND NOT ColdBooksSession.getOverrideBatch(wcTicket)>
+					<cflog text="There was an error running the batch.  We'll retry the transactions individually.: Hresult: #hresult#, Message: #message#." />
+					<cfset ColdBooksSession.setOverrideBatch(wcTicket, true) />
+	
+				<cfelse>
+					<!--- the first transaction failed, we need to log an error --->
+					<cfset connection.recordError(hresult & " " & message) />
+	
+					<!--- we can now switch back to batch processing, if configured to do so --->
+					<cfif getRunAsBatch()>
+						<!--- turn off the individual running for the rest of the batch --->
+						<cfset ColdBooksSession.setOverrideBatch(wcTicket, false) />
+					</cfif>
+				</cfif>
 			<cfelse>
-				<!--- the first transaction failed, we need to log an error --->
-				<cfset connection.recordError(hresult & " " & message) />
-
-				<!--- we can now switch back to batch processing, if configured to do so --->
-				<cfif getRunAsBatch()>
-					<!--- turn off the individual running for the rest of the batch --->
-					<cfset ColdBooksSession.setOverrideBatch(wcTicket, false) />
+				
+				<!--- no errors --->
+				<!--- handle the response (IE, make cfc callback, record the response, etc) --->
+	
+				<!--- todo: factor out into a logging class --->
+				<cflog text="Handling Response" />
+	
+				<cfif getrunAsBatch()>
+					<cfset Connection.handleResponseSet(response) />
+				<cfelse>
+					<cfset Connection.handleResponse(response) />
 				</cfif>
 			</cfif>
-		<cfelse>
-			<!--- no errors --->
-			<!--- handle the response (IE, make cfc callback, record the response, etc) --->
-
-			<!--- todo: factor out into a logging class --->
-			<cflog text="Handling Response" />
-
-			<cfif getrunAsBatch()>
-				<cfset Connection.handleResponseSet(response) />
-			<cfelse>
-				<cfset Connection.handleResponse(response) />
-			</cfif>
-
-			<!--- todo: factor out into a logging class --->
-			<cflog text="Done Handling Response" />
+			
 		</cfif>
 		
-		<cfset var pendingRequests = Connection.getPendingRequestCount() />
+		<cfdump var="#ColdBooksSession.getAllValues(wcTicket)#" output="console" />
 		
-		<cfset Connection.truncateLog() />
-		<cfif totalRequests IS NOT 0>
-			<cfset var percentDone = pendingRequests GT totalRequests ? 0 : (100 - round((pendingRequests/totalRequests)*100)) />
-		<cfelse>
-			<cfset var percentDone = 100 />
+		<!--- of all requests, how far along are we? --->
+		<cfset arguments.percentDone = round((arguments.completedRequests/arguments.totalRequests)*100) />
+		
+		<cfif ColdBooksSession.valueExists(wcTicket, "threadPercentComplete") && ColdBooksSession.getValue(wcTicket, "threadPercentComplete")>
+			<cfset arguments.percentDone += round( ColdBooksSession.getValue(wcTicket, "threadPercentComplete")/arguments.totalRequests ) />
 		</cfif>
-
-
-		<cfset arguments = mergeStructs(arguments, {pendingRequests=pendingRequests, percentDone=percentDone}) />
+		
+		<cfif arguments.percentDone IS 100 AND arguments.completedRequests IS NOT arguments.completedRequests>
+			<cfset arguments.percentDone = 99 />
+		</cfif>
+			
 		<cfset raiseEvent(Connection, "onAfterReceiveResponseXML", arguments ) />
 
+		<cfset Connection.truncateLog() />
 		<cfreturn JavaCast("int", arguments.percentDone) />
 	</cffunction>
 	
 	<cffunction name="getLastError" access="public" returntype="Any">
 		<cfargument name="ticket" type="String" />
-		<cfset arguments.error = getColdBooksSession().getError(ticket) />
-		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
+		
+		<cfif getColdBooksSession().hasError(ticket)>
+			<!--- have an error? share an error --->
+			<cfset arguments.error = getColdBooksSession().getError(ticket) />
+			<cfset var Connection = getColdBooksSession().getConnection(ticket) />
+			
+			<cfset raiseEvent(Connection, "onGetLastError", arguments ) />
 
-		<cfset raiseEvent(Connection, "onGetLastError", arguments ) />
+			<cfdump var="#arguments.error#" output="console" />
+			<cfreturn "#error.message# | #error.detail# | #error.tagcontext[1].template# (#error.tagcontext[1].line#)" />
 
-		<cfdump var="#arguments.error#" output="console" />
-		<cfreturn "#error.message# | #error.detail# | #error.tagcontext[1].template# (#error.tagcontext[1].line#)" />
+		<!--- <cfelseif ColdBooksSession.valueExists(ticket, "NoOp")>
+			<cfset ColdBooksSession.deleteValue(ticket, "NoOp") />
+			<cfreturn "NoOp" /> --->
+			
+		<cfelse>
+			<!--- we seem to have an error of some sort --->
+			<cfreturn "No error recorded.  You should check the ColdFusion logs for server errors." />
+						
+		</cfif>
+	
 	</cffunction>
 	
 	<cffunction name="convertToJavaArray" access="private">

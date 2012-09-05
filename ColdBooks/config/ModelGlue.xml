@@ -42,7 +42,7 @@
 		<views>
 			<include name="body" template="pages/configured.cfm" />
 		</views>
-	</event-handler> -->
+	</event-handler> -->	
 	
 	<event-handler name="Connections" type="Secured,Templated">
 		<broadcasts>
@@ -96,6 +96,15 @@
 		</broadcasts>
 		<views>
 			<include name="body" template="pages/logDetail.cfm"/>
+		</views>
+	</event-handler>
+	
+	<event-handler name="textxml">
+		<broadcasts>
+			<message name="GetLogRecord" />	
+		</broadcasts>
+		<views>
+			<include name="body" template="pages/xml.cfm" />
 		</views>
 	</event-handler>
 	

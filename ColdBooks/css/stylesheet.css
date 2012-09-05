@@ -28,3 +28,12 @@ table.lined table tr td{
 	height: 20em;
 	overflow:  scroll;
 }
+
+.text{
+	max-height: 15em;
+	width: auto;
+	border: 1px solid black;
+	overflow: auto;
+	margin: 0px!important;
+	padding: 10px;
+}

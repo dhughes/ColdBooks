@@ -26,8 +26,8 @@
 	<cfgridcolumn name="callbackCfc" header="Callback CFC">
 	<cfgridcolumn name="callbackFunction" header="Callback Function">
 	<cfgridcolumn name="returnFormat" header="Callback Format">
-	<cfgridcolumn name="request" header="Request XML">
-	<cfgridcolumn name="response" header="Response XML">
+	<cfgridcolumn name="request" header="Requests">
+	<cfgridcolumn name="response" header="Responses">
 	<cfgridcolumn name="error" header="Error Text">
 	<cfgridcolumn name="runAfterDateTime" header="Run After">
 	<cfgridcolumn name="delete" header="" width="20">

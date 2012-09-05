@@ -236,6 +236,19 @@ component extends="ColdBooks.model.dao.DAO" output="false" accessors="true"
 
 		return result.count;
 	}
+	
+	function cancelPendingMessagesForConnection(connectionId){
+		var sql = "
+			UPDATE QbMessage 
+			SET error = 'Canceled Request'
+			WHERE connectionId = :connectionId AND response IS NULL AND error IS NULL";
+		if(structKeyExists(arguments, "filterFutureMessages") AND arguments.filterFutureMessages){
+			sql &= " AND (runAfterDateTime IS NULL OR runAfterDateTime <= CURRENT_TIMESTAMP)";
+		}
+		var query = new Coldbooks.model.cf.Query(sql=sql, datasource=getDsn());
+		query.addParam(name="connectionId", value=connectionId);
+		query.execute();
+	}
 
 	function getErroredRequests(connectionId){
 
@@ -290,10 +303,30 @@ component extends="ColdBooks.model.dao.DAO" output="false" accessors="true"
         	    LIMIT #start#, #pageSize#
 			</cfquery>
 		');
-
+		
 		for(var x = 1 ; x <= result.recordCount ; x++){
-			querySetCell(result,"request",htmlEditFormat(result["request"][x]),x);
-			querySetCell(result,"response",htmlEditFormat(result["response"][x]),x);	
+			/*
+			var matcher = CreateObject("java", "java.util.regex.Pattern").Compile("(?<=<).+?Rq").matcher(result["request"][x]);
+			var requestCount = 0;
+			while(matcher.find()){
+				requestCount++;
+			}
+			querySetCell(result, "request", requestCount/2, x);
+			
+			var matcher = CreateObject("java", "java.util.regex.Pattern").Compile("(?<=<).+?Ret").matcher(result["response"][x]);
+			var responseCount = 0;
+			while(matcher.find()){
+				responseCount++;
+			}
+			querySetCell(result, "response", responseCount/2, x);
+			*/
+			var request = xmlParse("<xml>" & result["request"][x] & "</xml>");
+			querySetCell(result, "request", ArrayLen(XmlSearch(request, "/*/*")), x);
+			
+			if(isXml(result["response"][x])){
+				var response = XmlParse(result["response"][x]);
+				querySetCell(result, "response", ArrayLen(XmlSearch(response, "/*/*")), x);
+			}
 		}
 		
 		return result;

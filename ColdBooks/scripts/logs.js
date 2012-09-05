@@ -115,6 +115,7 @@ clearLogDetail = function(){
 }
 
 formatXml = function(){
+	/*
 	$("#logDetail input[type='radio']").click(function(){
 		var xml = $("#" + $(this).attr('name') + " div.xml");
 		var text = $("#" + $(this).attr('name') + " div.text");
@@ -131,5 +132,5 @@ formatXml = function(){
 
 		LoadXMLString(xml.attr("id"), xml.text());
 	});
-	$(".text").hide();
+	$(".text").hide();*/
 }

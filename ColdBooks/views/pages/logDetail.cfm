@@ -23,31 +23,24 @@
 	</cfif>
 
 	<h3>Request XML</h3>
+	
 	<div id="request">
-		<form>Show as:
+		<!--- <form>Show as:
 			<input type="radio" name="request" value="xml" checked="checked"/> Xml
 			<input type="radio" name="request" value="text"/> Text
 		</form>
-		<div id="requestXml" class="xml">#htmlEditFormat(message.getrequest())#</div>
+		<div id="requestXml" class="xml">#htmlEditFormat(message.getrequest())#</div> --->
 		<div class="text">#htmlEditFormat(message.getrequest())#</div>
+		<a href="index.cfm?event=textxml&id=#message.getId()#&type=request" target="detail">View Formatted</a>
 	</div>
-
-	<cfif IsXml(message.getresponse())>
-		<h3>Response XML</h3>
-		<div id="response">
-			<form>Show as:
-				<input type="radio" name="response" value="xml" checked="checked"/> Xml
-				<input type="radio" name="response" value="text"/> Text
-			</form>
-			<div id="responseXml" class="xml">#htmlEditFormat(message.getresponse())#</div>
-			<div class="text">#htmlEditFormat(message.getresponse())#</div>
-		</div>
-	<cfelseif NOT Len(message.getresponse())>
+	
+	<cfif NOT Len(message.getresponse())>
 		<h3>Response Text</h3>
 		<i>[Empty String]</i>
 	<cfelse>
 		<h3>Response Text</h3>
-		#htmlEditFormat(message.getresponse())#
+		<div class="text">#htmlEditFormat(message.getresponse())#</div>
+		<a href="index.cfm?event=textxml&id=#message.getId()#&type=response" target="detail">View Formatted</a>
 	</cfif>
 	
 	<cfif IsXml(message.geterror())>

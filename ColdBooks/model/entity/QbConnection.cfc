@@ -237,7 +237,9 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 		// using the XML I need to find the request
 		xml = XmlParse(xml);
 		// record the event for each child
-		handleResponseMessage(xml.XMLRoot.QBXMLMsgsRs.XmlChildren[1]);
+		if(ArrayLen(xml.XMLRoot.QBXMLMsgsRs.XmlChildren)){
+			handleResponseMessage(xml.XMLRoot.QBXMLMsgsRs.XmlChildren[1]);
+		}
 	}
 	
 	private function handleResponseMessage(response){
@@ -265,42 +267,79 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 			response = response.getQBXMLMsgsRs().getHostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs();
 		}
 
-		var qbSessionData = getColdBooksSession().getAllValues(getConnectionId());
+		var ColdBooksSession = getColdBooksSession();
 
+		//var qbSessionData = getColdBooksSession().getAllValues(getConnectionId());
+
+		// indicate that we're running a callback
+		ColdBooksSession.setValue(getConnectionId(), "isRunning", true);
+		ColdBooksSession.setValue(getConnectionId(), "threadPercentComplete", 0);
+		
 		// invoke the CFC
 		// you may wonder why this is being done in a thread.... the reason is that the CFCProxy
 		// seems to be causing java.lang.IllegalStateException in the QBWS service.  wrapping 
 		// it up in a thread seems to surpress these problems.
-		thread
-			action="run"
-			name="#requestId#"
-			appname="AsyncCallback"
-			cfc="#cfc#"
-			method="#method#"
-			response="#response#"
-			requestId="#requestId#"
-			connection="#this#"
-			ColdBooksSession="#qbSessionData#"
-		{
-			var CFCProxy = CreateObject("Java", "coldfusion.cfc.CFCProxy").init(cfc);
-			CFCProxy.invoke(method, [response, requestId, connection, ColdBooksSession], getPageContext().getRequest(), getPageContext().getResponse());
+		try{
+			thread
+				action="run"
+				name="#requestId#"
+				appname="AsyncCallback"
+				priority="HIGH"   
+				cfc="#cfc#"
+				method="#method#"
+				response="#response#"
+				requestId="#requestId#"
+				connection="#this#"
+				connectionId="#getConnectionId()#"
+				ColdBooksSession="#ColdBooksSession#"
+			{
+				writelog("spawned thread...");
+				
+				// indicate that we're running a callback
+				ColdBooksSession.setValue(connectionId, "isRunning", true);
+				ColdBooksSession.setValue(connectionId, "threadPercentComplete", 0);
+				
+				// do the callback
+				try{
+					var CFCProxy = CreateObject("Java", "coldfusion.cfc.CFCProxy").init(cfc);
+					CFCProxy.invoke(method, [response, requestId, connection, ColdBooksSession.getAllValues(connectionId)], getPageContext().getRequest(), getPageContext().getResponse());
+					writelog("finished working behind the scenes...");	
+				} catch(any e){
+					// record the error in session and note that we're done running
+					ColdBooksSession.setError(connectionId, e);
+	
+					// save the error into the corrisponding message
+					var Message = getColdBooksMessageDao().getMessageByMessageIdInQBFormat(requestId);
+					Message.setError(serializeJSON(e));
+					getColdBooksMessageDao().saveMessage(Message);
+					
+					writelog("Error while running callback.");
+					writedump(e, "console");
+				}
+				
+				// we're done.  We may or may not have had an error thrown by the error handler
+				ColdBooksSession.setValue(connectionId, "completedRequests", ColdBooksSession.getValue(connectionId, "completedRequests")+1);
+				ColdBooksSession.setValue(connectionId, "threadPercentComplete", 0);
+				ColdBooksSession.setValue(connectionId, "isRunning", false);
+				
+				//writedump(ColdBooksSession.getAllValues(connectionId), "console", "text", false, "QB session in thread"  );
+				
+				writelog("Completed callback thread/process.");
+				
+				
+					
+			}
+		} catch(any e){
+			// there was some sort of error thrown when threading, but not within the thread
+			writedump(e, "console");
+			ColdBooksSession.setValue(connectionId, "completedRequests", ColdBooksSession.getValue(connectionId, "completedRequests")+1);
+			ColdBooksSession.setValue(connectionId, "threadPercentComplete", 0);
+			ColdBooksSession.setValue(getConnectionId(), "isRunning", false);
+			writelog("We errored spawning thread!");
+			
+			
 		}
-
-		// join the thread....
-		thread
-			action="join"
-			name="#requestId#";
-
-		// put any modified response values back into the response structure
-		//StructAppend(response, cfthread[requestId].response, true);
-
-		// save any errors
-		if(structKeyExists(cfthread[requestId], "error")){
-			var Message = getColdBooksMessageDao().getMessageByMessageIdInQBFormat(requestId);
-			Message.setError(serializeJSON(cfthread[requestId].error));
-			getColdBooksMessageDao().saveMessage(Message);
-			writedump(cfthread[requestId].error, "console");
-		}
+		
 		
 	}
 	
@@ -321,6 +360,10 @@ component extends="Entity" output="false" accessors="true" displayname="Connecti
 	
 	function getNextPendingMessageXml(){
 		return getColdBooksMessageDao().getNextPendingMessageForConnection(getId()).getRequest();
+	}
+	
+	function cancelPendingMessages(){
+		getColdBooksMessageDao().cancelPendingMessagesForConnection(getId());
 	}
 	
 	function recordError(error){ 
