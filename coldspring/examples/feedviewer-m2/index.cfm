@@ -20,7 +20,7 @@
 --->
 
 <cfset request.MachIIConfigMode =iif(isDefined("url.rl"),1,0)/>
-<cfset MACHII_CONFIG_PATH =ExpandPath('controller/app-config.xml') />
+<cfset MACHII_CONFIG_PATH =ExpandPath('./controller/app-config.xml') />
 
 
 <cfinclude template="/machii/mach-ii.cfm"/>

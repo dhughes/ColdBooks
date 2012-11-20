@@ -16,7 +16,7 @@
 		<cfset var bf = "" />
 		<cfset var bean = "" />
 		
-		<cfset parentBeanFactory.loadBeans(expandPath(/modelglue/gesture/loading/test/ParentBeans.xml)) />
+		<cfset parentBeanFactory.loadBeans(expandPath("/ModelGlue/gesture/loading/test/ParentBeans.xml")) />
 		<cfset boot.parentBeanFactory = parentBeanFactory />
 		
 		<cfset bf = boot.createBeanFactory() />

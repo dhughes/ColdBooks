@@ -77,13 +77,13 @@
 		
 		<!--- TODO: Remove condition after <import> is released --->
 		<cfif this.modelglueVersionIndicator eq this.versionIndicators.unity>
-			<cfset bf.loadBeans(expandPath(/modelglue/unity/config/UnityCompatabilityAliases.xml)) />
+			<cfset bf.loadBeans(expandPath("/ModelGlue/unity/config/UnityCompatabilityAliases.xml")) />
 		</cfif>
 	</cfif>
 
 	<!--- If we're in legacy mode, we change the value of the primaryModule in the configuration. --->
 	<cfif this.modelglueVersionIndicator eq this.versionIndicators.legacy>
-		<cfset bf.loadBeans(expandPath(/modelglue/gesture/configuration/LegacyBeans.xml)) />
+		<cfset bf.loadBeans(expandPath("/ModelGlue/gesture/configuration/LegacyBeans.xml")) />
 		<cfset cfg = bf.getBean("modelglue.ModelGlueConfiguration") />
 		<cfset cfg.setPrimaryModule(this.primaryModulePath) />
 	</cfif>

@@ -1,6 +1,6 @@
 <cfsilent>
 	<cfif not StructKeyExists(application,"beanFactoryX")>
-		<cfset path = ExpandPath('') />
+		<cfset path = ExpandPath('.') />
 		<cfset configFile = path & "/beans.xml" />
 		<cfset application.beanFactory = CreateObject('component', 'coldspring.beans.DefaultXmlBeanFactory').init() />
 		<cfset application.beanFactory.loadBeans(configFile) />

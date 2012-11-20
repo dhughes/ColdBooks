@@ -8,7 +8,7 @@
 
 <cffunction name="createBeanFactory" output="false" access="public">
 	<cfset variables.bf = createObject("component", "coldspring.beans.DefaultXmlBeanFactory").init() />
-	<cfset variables.bf.loadBeans(expandPath(/modelglue/gesture/externaladapters/beaninjection/test/ColdSpring.xml)) />
+	<cfset variables.bf.loadBeans(expandPath("/ModelGlue/gesture/externaladapters/beaninjection/test/ColdSpring.xml")) />
 	
 	<cfreturn variables.bf />
 </cffunction>

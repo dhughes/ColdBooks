@@ -35,9 +35,9 @@
 <tr>
 	<td width="25%" class="leftContent" valign="top">
 		<ul>
-			<li><a href="../feedviewer-m2">Use Mach-ii Controller</a></li>
-			<li><a href="../feedviewer-fb4">Use FuseBox 4 Controller</a></li>
-			<li><a href="../feedviewer-remote">Use the Remote Facade</a></li>						
+			<li><a href="../feedviewer-m2/">Use Mach-ii Controller</a></li>
+			<li><a href="../feedviewer-fb4/">Use FuseBox 4 Controller</a></li>
+			<li><a href="../feedviewer-remote/">Use the Remote Facade</a></li>						
 		</ul><br /><br />  
 		<ul>
 			<li><a href="index.cfm?show=services.xml">View Service Definitions</a></li>

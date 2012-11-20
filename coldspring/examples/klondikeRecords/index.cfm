@@ -24,12 +24,12 @@
 -->
  
 <!--- Set the path to the application's mach-ii.xml file. ./config/mach-ii.xml --->
-<cfset MACHII_CONFIG_PATH = ExpandPath(config/klondike-conf.xml) />
+<cfset MACHII_CONFIG_PATH = ExpandPath("./config/klondike-conf.xml") />
 
 <!--- Set the configuration mode (when to reload): -1=never, 0=dynamic, 1=always --->
 <cfset MACHII_CONFIG_MODE =iif(isDefined("url.rl"),1,0)/>
 <!--- Set the app key for sub-applications within a single cf-application. --->
-<cfset MACHII_APP_KEY = GetFileFromPath(ExpandPath(template="")) />
+<cfset MACHII_APP_KEY = GetFileFromPath(ExpandPath(".")) />
 <!--- Include the mach-ii.cfm file included with the core code. --->
 <cfinclude template="/MachII/mach-ii.cfm" />
 

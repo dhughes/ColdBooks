@@ -2,7 +2,7 @@
 
 	
 	<cfset bf = createObject("component","coldspring.beans.DefaultXmlBeanFactory").init() />
-	<cfset bf.loadBeansFromXmlFile(expandPath(testBeans.xml))/>
+	<cfset bf.loadBeansFromXmlFile(expandPath("testBeans.xml"))/>
 	
 	
 	<cfset stringBean = bf.getBean("stringBean") />

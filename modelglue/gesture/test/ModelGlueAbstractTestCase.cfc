@@ -35,7 +35,7 @@
 					createModelGlue()>
 					
 		<!--- load "test" application event definitions --->
-		<cfset mg.getInternalBean("modelglue.ModuleLoaderFactory").create("XML").load( mg, expandPath(/modelglue/gesture/test/primaryModule.xml) ) />
+		<cfset mg.getInternalBean("modelglue.ModuleLoaderFactory").create("XML").load( mg, expandPath("/ModelGlue/gesture/test/primaryModule.xml") ) />
 
 		<cfset request._modelglue.bootstrap.framework = mg />
 		

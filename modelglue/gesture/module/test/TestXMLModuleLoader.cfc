@@ -10,7 +10,7 @@
 	<cfset var beanFactory = "" />
 	<cfset var ctrl = "" />
 	
-	<cfset mg.getInternalBeanFactory().loadBeans(expandPath(/modelglue/gesture/externaladapters/beaninjection/test/ColdSpring.xml)) />
+	<cfset mg.getInternalBeanFactory().loadBeans(expandPath("/ModelGlue/gesture/externaladapters/beaninjection/test/ColdSpring.xml")) />
 	
 	<cfset loader = mg.getInternalBean("modelglue.ModuleLoaderFactory").create("XML") />
 	
@@ -77,7 +77,7 @@
 	<cfset var beanFactory = "" />
 	
 	<cfset beanFactory = mg.getInternalBeanFactory() />
-	<cfset beanFactory.loadBeans(expandPath(/modelglue/gesture/externaladapters/beaninjection/test/ColdSpring.xml)) />
+	<cfset beanFactory.loadBeans(expandPath("/ModelGlue/gesture/externaladapters/beaninjection/test/ColdSpring.xml")) />
 	
 	<cfset loader = mg.getInternalBean("modelglue.ModuleLoaderFactory").create("XML") />
 	
@@ -95,7 +95,7 @@
 	<cfset var beanFactory = "" />
 	
 	<cfset beanFactory = mg.getInternalBeanFactory() />
-	<cfset beanFactory.loadBeans(expandPath(/modelglue/gesture/externaladapters/beaninjection/test/ColdSpring.xml)) />
+	<cfset beanFactory.loadBeans(expandPath("/ModelGlue/gesture/externaladapters/beaninjection/test/ColdSpring.xml")) />
 	
 	<cfset loader = mg.getInternalBean("modelglue.ModuleLoaderFactory").create("XML") />
 	
@@ -126,7 +126,7 @@
 	<cfset var beanFactory = "" />
 	
 	<cfset beanFactory = mg.getInternalBeanFactory() />
-	<cfset beanFactory.loadBeans(expandPath(/modelglue/gesture/externaladapters/beaninjection/test/ColdSpring.xml)) />
+	<cfset beanFactory.loadBeans(expandPath("/ModelGlue/gesture/externaladapters/beaninjection/test/ColdSpring.xml")) />
 	
 	<cfset loader = mg.getInternalBean("modelglue.ModuleLoaderFactory").create("XML") />
 
@@ -144,7 +144,7 @@
 	<cfset var viewMappings = 0 />
 	
 	<cfset beanFactory = mg.getInternalBeanFactory() />
-	<cfset beanFactory.loadBeans(expandPath(/modelglue/gesture/externaladapters/beaninjection/test/ColdSpring.xml)) />
+	<cfset beanFactory.loadBeans(expandPath("/ModelGlue/gesture/externaladapters/beaninjection/test/ColdSpring.xml")) />
 	
 	<cfset loader = mg.getInternalBean("modelglue.ModuleLoaderFactory").create("XML") />
 
@@ -168,7 +168,7 @@
 	<cfset var viewMappings = arrayNew(1) />
 	<cfset arrayAppend( viewMappings, "initialViewMapping" ) />
 	<cfset beanFactory = mg.getInternalBeanFactory() />
-	<cfset beanFactory.loadBeans(expandPath(/modelglue/gesture/externaladapters/beaninjection/test/ColdSpring.xml)) />
+	<cfset beanFactory.loadBeans(expandPath("/ModelGlue/gesture/externaladapters/beaninjection/test/ColdSpring.xml")) />
 	
 	<cfset loader = mg.getInternalBean("modelglue.ModuleLoaderFactory").create("XML") />
 	

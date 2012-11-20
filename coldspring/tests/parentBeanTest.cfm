@@ -1,5 +1,5 @@
 <cfsilent>
-	<cfset path = ExpandPath('') />
+	<cfset path = ExpandPath('.') />
 	<cfset configFile = path & "/parentBeans.xml" />
 	<cfset beanFactory = CreateObject('component', 'coldspring.beans.DefaultXmlBeanFactory').init() />
 	<cfset beanFactory.loadBeans(configFile) />

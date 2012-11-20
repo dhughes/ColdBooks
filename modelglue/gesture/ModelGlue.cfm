@@ -22,7 +22,7 @@
 			or (
 					application[ModelGlue_APP_KEY].configuration.reload
 			)>
-	<cflock name="#expandPath(template="")#/.modelglue.loading" type="exclusive" timeout="60">
+	<cflock name="#expandPath(".")#/.modelglue.loading" type="exclusive" timeout="60">
 		<cfif not structKeyExists(application, ModelGlue_APP_KEY)
 					or (
 							structKeyExists(url, application[ModelGlue_APP_KEY].configuration.reloadKey)
