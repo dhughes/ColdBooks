@@ -139,7 +139,8 @@
 		<cfset var Connection = getColdBooksSession().getConnection(ticket) />
 
 		<cfif ColdBooksSession.hasError(ticket)>
-			<cflog text="We are killing this since it had an error." />
+			<cflog text="We are killing this since it had an error. Error to follow:" />
+			<cfdump var="#ColdBooksSession.getError(ticket)#" output="console" />
 			<!--- we have an error and want to kill this process --->
 			<cfreturn "" />
 			
