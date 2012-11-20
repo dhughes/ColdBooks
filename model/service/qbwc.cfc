@@ -283,7 +283,11 @@
 				<cfset arguments.percentDone += round( ColdBooksSession.getValue(wcTicket, "threadPercentComplete")/arguments.totalRequests ) />
 			</cfif>
 			
-			<cfif arguments.percentDone IS 100 AND arguments.completedRequests IS NOT arguments.completedRequests>
+			<cfif arguments.percentDone IS 100 AND 
+				(
+					arguments.completedRequests IS NOT arguments.totalRequests 
+					OR connection.hasPendingMessage()
+				)>
 				<cfset arguments.percentDone = 99 />
 			</cfif>
 		
