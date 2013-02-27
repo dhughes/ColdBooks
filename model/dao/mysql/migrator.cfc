@@ -31,8 +31,9 @@ component accessors="true"{
 			logRetention VARCHAR(10),
 			logTruncation INTEGER,
 			eventListeners TEXT,
-			PRIMARY KEY (id)
-		)',
+			PRIMARY KEY (id),
+			INDEX (id)
+		) ENGINE = InnoDB',
 
 		'CREATE TABLE QbMessage (
 			id integer NOT NULL AUTO_INCREMENT,
@@ -49,8 +50,8 @@ component accessors="true"{
 			messageId VARCHAR(35),
 			runAfterDateTime TIMESTAMP,
 			PRIMARY KEY (id),
-			FOREIGN KEY (connectionId) REFERENCES QbConnecton(id)
-		)'
+			FOREIGN KEY (connectionId) REFERENCES QbConnection(id)
+		) ENGINE = InnoDB'
 
 	];
 
@@ -78,9 +79,10 @@ component accessors="true"{
 
 		for(var i = migrationVersion+1 ; i <= ArrayLen(migrations) ; i++){
 			writelog("Running Migration: " & i);
+			writelog(migrations[i]);
 			include this.cfml('
 				<cfquery datasource="#getColdBooksDatasource().getDsn()#">
-					#migrations[i]#
+					 #migrations[i]#
 				</cfquery>
 				<cfquery datasource="#getColdBooksDatasource().getDsn()#">
 					INSERT INTO MigrationVersion
